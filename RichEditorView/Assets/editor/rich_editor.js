@@ -356,3 +356,53 @@ RE.getSelectedHref = function() {
 
     return href ? href : null;
 };
+
+RE.getSelectionCoords = function() {
+    var doc = window.document;
+    var sel = doc.selection, range, rects, rect;
+    var x = 0, y = 0, width = 1, height = 20;
+    if (sel) {
+        if (sel.type != "Control") {
+            range = sel.createRange();
+            range.collapse(true);
+            x = range.boundingLeft;
+            y = range.boundingTop;
+        }
+    } else if (window.getSelection) {
+        sel = window.getSelection();
+        if (sel.rangeCount) {
+            range = sel.getRangeAt(0).cloneRange();
+            if (range.getClientRects) {
+                range.collapse(true);
+                rects = range.getClientRects();
+                if (rects.length > 0) {
+                    var editorRect = RE.editor.getClientRects()[0];
+                    rect = range.getClientRects()[0];
+                    x = rect.left;
+                    y = rect.top - editorRect.top;
+                    width = rect.width == 0 ? 1 : rect.width;
+                    height = rect.height;
+                }
+            }
+            // Fall back to inserting a temporary element
+            if (x == 0 && y == 0) {
+                var span = doc.createElement("span");
+                if (span.getClientRects) {
+                    // Ensure span has dimensions and position by
+                    // adding a zero-width space character
+                    span.appendChild( doc.createTextNode("\u200b") );
+                    range.insertNode(span);
+                    rect = span.getClientRects()[0];
+                    x = rect.left;
+                    y = rect.top;
+                    var spanParent = span.parentNode;
+                    spanParent.removeChild(span);
+                    
+                    // Glue any broken text nodes back together
+                    spanParent.normalize();
+                }
+            }
+        }
+    }
+    return x + "," + y + "," + width + "," + height;
+};

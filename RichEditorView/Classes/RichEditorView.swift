@@ -180,6 +180,24 @@ extension RichEditorView {
         }
     }
 
+    private func updateCursor() {
+        let coordinateString = runJS("RE.getSelectionCoords();")
+        let components = coordinateString.componentsSeparatedByString(",")
+        guard components.count >= 4 else {
+            return
+        }
+
+        guard let x = Int(components[0]),
+            let y = Int(components[1]),
+            let width = Int(components[2]),
+            let height = Int(components[3]) else {
+                return
+        }
+
+        let rect = CGRect(x: x, y: y, width: width, height: height)
+        webView.scrollView.scrollRectToVisible(rect, animated: true)
+    }
+
     private func isContentEditable() -> Bool {
         if editorLoaded {
             let value = runJS("RE.editor.isContentEditable") as NSString
@@ -516,6 +534,7 @@ extension RichEditorView {
             let content = runJS("RE.getHtml()")
             contentHTML = content
             updateHeight()
+            updateCursor()
         }
         else if method.hasPrefix("focus") {
             delegate?.richEditorTookFocus?(self)
