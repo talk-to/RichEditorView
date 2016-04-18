@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- "use strict";
+"use strict";
 
 var RE = {};
 
@@ -286,6 +286,7 @@ RE.addRangeToSelection = function(selection, range) {
 RE.selectElementContents = function(el) {
     var range = document.createRange();
     range.selectNodeContents(el);
+    
     var sel = window.getSelection();
     // this.createSelectionFromRange sel, range
     RE.addRangeToSelection(sel, range);
@@ -294,6 +295,7 @@ RE.selectElementContents = function(el) {
 RE.restorerange = function() {
     var selection = window.getSelection();
     selection.removeAllRanges();
+    
     var range = document.createRange();
     range.setStart(RE.currentSelection.startContainer, RE.currentSelection.startOffset);
     range.setEnd(RE.currentSelection.endContainer, RE.currentSelection.endOffset);
@@ -304,6 +306,7 @@ RE.focus = function() {
     var range = document.createRange();
     range.selectNodeContents(RE.editor);
     range.collapse(false);
+    
     var selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
@@ -353,9 +356,8 @@ RE.countAnchorTagsInNode = function(node) {
  * @returns {string}
  */
 RE.getSelectedHref = function() {
-    var href, sel;
-    href = '';
-    sel = window.getSelection();
+    var href = '';
+    var sel = window.getSelection();
     if (!RE.rangeOrCaretSelectionExists()) {
         return null;
     }
@@ -390,9 +392,9 @@ RE.wrapTextNodes = function() {
 
 RE.createWrapper = function(elms, node) {
     var child = node.cloneNode(true);
-    var el    = elms;
+    var el = elms;
     
-    var parent  = el.parentNode;
+    var parent = el.parentNode;
     var sibling = el.nextSibling;
 
     child.appendChild(el);
@@ -402,29 +404,29 @@ RE.createWrapper = function(elms, node) {
     } else {
         parent.appendChild(child);
     }
-    
 };
 
 /* retrieve caret vertical position */
 
 RE.getCaretPosition = function() {
-    var x=0, y=0;
+    var x = 0;
+    var y = 0;
     var newLine = false;
     var result = [];
-    var sel=window.getSelection();
+    var sel = window.getSelection();
+    
     if (sel.rangeCount) {
         var range = sel.getRangeAt(0);
         var needsWorkAround = (range.startOffset == 0)
         /* Removing fixes bug when node name other than 'div' */
         // && range.startContainer.nodeName.toLowerCase() == 'div');
         if (needsWorkAround) {
-            console.log(range);
-            x=range.startContainer.offsetLeft;
-            y=range.startContainer.offsetTop; // add range.startContainer.clientHeight if want bottom of caret;
+            x = range.startContainer.offsetLeft;
+            y = range.startContainer.offsetTop; // add range.startContainer.clientHeight if want bottom of caret;
             newLine = true; // position is on new line with no content
         } else {
             if (range.getClientRects) {
-                var rects=range.getClientRects();
+                var rects = range.getClientRects();
                 if (rects.length > 0) {
                     x = rects[0].left;
                     y = rects[0].top;
@@ -433,7 +435,7 @@ RE.getCaretPosition = function() {
             }
         }
     }
+    
     var json = JSON.stringify({height: y, newLine: newLine});
-    console.log(json);
     return json;
 };
