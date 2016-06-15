@@ -381,7 +381,7 @@ RE.getSelectedHref = function() {
 RE.wrapTextNodes = function() {
     var contents = RE.editor.childNodes;
     for (var i = 0; i < contents.length; i++) {
-        if (contents[i].nodeType === 3) {
+        if (contents[i].nodeType === Node.TEXT_NODE) {
             var newNode = document.createElement('div');
             RE.createWrapper(contents[i], newNode);
             RE.focus();
