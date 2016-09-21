@@ -48,7 +48,7 @@ div {
     content: attr(placeholder);
     position: absolute;
     top: 0px;
-    color: #cccccc;
+    color: #ccc;
 }
 
 #editor {
@@ -59,7 +59,7 @@ div {
 	font-family: 'HelveticaNeue';
 	color: black; 
 	line-height: 28px; 
-	font-size: 12pt;
+	font-size: 14pt;
 }
 
 ul {
