@@ -6,9 +6,9 @@ RichEditorView
 
 RichEditorView is a simple, modular, drop-in UIView subclass for Rich Text Editing.
 
-Written in Swift 2.0 (Xcode 7.0)
+Written in Swift 3.0 (Xcode 8.x)
 
-Supports iOS 8 and 9 through Cocoapods or Carthage.
+Supports iOS 9 through CocoaPods or Carthage.
 
 - _Looking for Android? Check out_ [wasabeef/richeditor-android](https://github.com/wasabeef/richeditor-android)
 
@@ -59,7 +59,6 @@ Add the following to your `Podfile`:
 
 ```
 pod "RichEditorView"
-use_frameworks!
 ```
 
 Note: the `use_frameworks!` is required for pods made in Swift.
@@ -91,7 +90,7 @@ To change the styles of the currently selected text, you just call methods direc
 ```Swift
 editor.bold()
 editor.italic()
-editor.setTextColor(UIColor.redColor())
+editor.setTextColor(UIColor.red)
 ```
 
 If you want to show the editing toolbar `RichEditorToolbar`, you will need to handle displaying it (`KeyboardManager.swift` in the sample project is a good start). But configuring it is as easy as telling it which options you want to enable, and telling it which `RichEditorView` to work on.
@@ -107,12 +106,12 @@ Some actions require user feedback (such as select an image, choose a color, etc
 ```Swift
 private func randomColor() -> UIColor {
     let colors = [
-        UIColor.redColor(),
-        UIColor.orangeColor(),
-        UIColor.yellowColor(),
-        UIColor.greenColor(),
-        UIColor.blueColor(),
-        UIColor.purpleColor()
+        UIColor.red,
+        UIColor.orange,
+        UIColor.yellow,
+        UIColor.green,
+        UIColor.blue,
+        UIColor.purple
     ]
 
     let color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
@@ -137,19 +136,11 @@ let clearAllItem = RichEditorOptionItem(image: UIImage(named: "clear"), title: "
 toolbar.options = [clearAllItem]
 ```
 
-Author
-------
-Caesar Wirth - cjwirth@gmail.com
-
-<a href="http://www.twitter.com/cjwirth">
-<img src="https://g.twimg.com/Twitter_logo_blue.png" width="50px" alt="@cjwirth on Twitter">
-@cjwirth
-</a>
-
 
 Acknowledgements
 ----------------
 
+* Caesar Wirth - cjwirth@gmail.com
 * [wasabeef/richeditor-android](https://github.com/wasabeef/richeditor-android) - Android version of this library (Apache v2)
 * [nnhubbard/ZSSRichTextEditor](https://github.com/nnhubbard/ZSSRichTextEditor) - Inspiration and Icons (MIT)
 
