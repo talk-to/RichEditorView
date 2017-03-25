@@ -23,9 +23,10 @@ html {
 body {
     min-height: 100%;
     overflow: auto;
+    margin: 0;
 }
 
-body, h1, p {
+h1, p, ul, ol {
     margin: 0;
 }
 
@@ -33,6 +34,15 @@ div {
     display: block;
     position: static;
     min-height: 28px;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+ol {
+    padding-left: 25px;
+    margin-left: 0.3em;
 }
 
 #editor {
@@ -60,12 +70,4 @@ div {
 	color: black; 
 	line-height: 28px; 
 	font-size: 14pt;
-}
-
-ul {
-    padding-left: 20px;
-}
-
-ol {
-    padding-left: 25px;
 }
