@@ -36,15 +36,6 @@ div {
     min-height: 28px;
 }
 
-ul {
-    padding-left: 20px;
-}
-
-ol {
-    padding-left: 25px;
-    margin-left: 0.3em;
-}
-
 #editor {
     -webkit-user-select: auto !important;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
