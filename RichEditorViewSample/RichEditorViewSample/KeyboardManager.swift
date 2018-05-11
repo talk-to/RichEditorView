@@ -52,7 +52,7 @@ class KeyboardManager: NSObject {
     /**
         Called when a keyboard notification is recieved. Takes are of handling the showing or hiding of the toolbar
     */
-    func keyboardWillShowOrHide(_ notification: Notification) {
+    @objc func keyboardWillShowOrHide(_ notification: Notification) {
         let info = notification.userInfo ?? [:]
         let duration = TimeInterval((info[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.floatValue ?? 0.25)
         let curve = UInt((info[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber)?.uintValue ?? 0)

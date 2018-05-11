@@ -611,7 +611,7 @@ extension RichEditorView {
         Called by the UITapGestureRecognizer when the user taps the view.
         If we are not already the first responder, focus the editor.
     */
-    internal func viewWasTapped() {
+    @objc internal func viewWasTapped() {
         if !webView.containsFirstResponder {
             focus()
         }
