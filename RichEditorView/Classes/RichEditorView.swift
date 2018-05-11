@@ -148,7 +148,7 @@ open class RichEditorView: UIView {
         webView.backgroundColor = UIColor.white
         
         webView.scrollView.isScrollEnabled = scrollEnabled
-        webView.scrollView.bounces = false
+        webView.scrollView.bounces = true
         webView.scrollView.delegate = self
         webView.scrollView.clipsToBounds = false
         
@@ -382,13 +382,10 @@ extension RichEditorView: UIScrollViewDelegate {
 
 // MARK: - UIWebViewDelegate
 extension RichEditorView: UIWebViewDelegate {
-
     public func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-
         // Handle pre-defined editor actions
         let callbackPrefix = "re-callback://"
-        if request.url?.absoluteString.hasPrefix(callbackPrefix) == true {
-            
+        if let url = request.url, url.absoluteString.hasPrefix(callbackPrefix) {
             // When we get a callback, we need to fetch the command queue to run the commands
             // It comes in as a JSON array of commands that we need to parse
             let commands = runJS("RE.getCommandQueue();")
@@ -414,10 +411,7 @@ extension RichEditorView: UIWebViewDelegate {
         
         // User is tapping on a link, so we should react accordingly
         if navigationType == .linkClicked {
-            if let
-                url = request.url,
-                let shouldInteract = delegate?.richEditor?(self, shouldInteractWithURL:url)
-            {
+            if let url = request.url, let shouldInteract = delegate?.richEditor?(self, shouldInteractWithURL:url) {
                 return shouldInteract
             }
         }
@@ -454,7 +448,7 @@ extension RichEditorView {
         var contentHeight: CGFloat?
         let htmlHeight = self.runJS("document.getElementById('editor').clientHeight;")
         if let n = NumberFormatter().number(from: htmlHeight) {
-            let floatValue = CGFloat(n)
+            let floatValue = CGFloat(truncating: n)
             contentHeight = floatValue
         } else {
             contentHeight = scrollView.frame.height
@@ -467,7 +461,7 @@ extension RichEditorView {
         let newLine = data!["newLine"] as! Bool
         if let caretPositionNumeric = data!["height"] as? NSNumber {
             
-            let caretFloat = CGFloat(caretPositionNumeric) - scrollView.contentOffset.y
+            let caretFloat = CGFloat(truncating: caretPositionNumeric) - scrollView.contentOffset.y
             
             let CGFloatCaretPositionNumeric = CGFloat(caretPositionNumeric.floatValue)
             if newLine {
