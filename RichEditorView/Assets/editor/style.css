@@ -24,6 +24,8 @@ body {
     min-height: 100%;
     overflow: auto;
     margin: 0;
+    line-height: 25px;
+    font-size: 13pt;
 }
 
 h1, p, ul, ol {
@@ -33,7 +35,7 @@ h1, p, ul, ol {
 div {
     display: block;
     position: static;
-    min-height: 28px;
+    min-height: 25px;
 }
 
 #editor {
@@ -57,6 +59,6 @@ div {
     height: 100%;
     overflow: auto;
     display: block;
-    font-family: -apple-system-body, 'Helvetica';
+    font-family: -apple-system, 'HelveticaNeue';
 	color: black; 
 }

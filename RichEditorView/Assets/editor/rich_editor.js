@@ -23,6 +23,17 @@ window.onload = function() {
 
 RE.editor = document.getElementById('editor');
 
+// prevent font inconsistencies from pasted text
+RE.editor.addEventListener('DOMNodeInserted', function(event) {
+    // remove font and span tags after insert/paste
+    switch (event.target.tagName) {
+        case 'FONT':
+        case 'SPAN':
+            event.target.outerHTML = event.target.innerHTML;
+            break;
+    }
+}, false);
+
 // Not universally supported, but seems to work in iOS 7 and 8
 document.addEventListener("selectionchange", function() {
     RE.backuprange();
@@ -387,7 +398,7 @@ RE.wrapTextNodes = function() {
             RE.focus();
         }
     }
-}
+};
 
 
 RE.createWrapper = function(elms, node) {
