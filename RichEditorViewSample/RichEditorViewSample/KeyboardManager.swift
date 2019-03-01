@@ -37,16 +37,16 @@ class KeyboardManager: NSObject {
     */
     func beginMonitoring() {
         let sel = #selector(keyboardWillShowOrHide(_:))
-        NotificationCenter.default.addObserver(self, selector: sel, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: sel, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: sel, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: sel, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     /**
         Stops monitoring for keyboard notifications
     */
     func stopMonitoring() {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     /**
@@ -54,12 +54,12 @@ class KeyboardManager: NSObject {
     */
     @objc func keyboardWillShowOrHide(_ notification: Notification) {
         let info = notification.userInfo ?? [:]
-        let duration = TimeInterval((info[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.floatValue ?? 0.25)
-        let curve = UInt((info[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber)?.uintValue ?? 0)
-        let options = UIViewAnimationOptions(rawValue: curve)
-        let keyboardRect = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue ?? CGRect.zero
+        let duration = TimeInterval((info[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.floatValue ?? 0.25)
+        let curve = UInt((info[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber)?.uintValue ?? 0)
+        let options = UIView.AnimationOptions(rawValue: curve)
+        let keyboardRect = (info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue ?? CGRect.zero
 
-        if notification.name == NSNotification.Name.UIKeyboardWillShow {
+        if notification.name == UIResponder.keyboardWillShowNotification {
             self.view?.addSubview(self.toolbar)
             UIView.animate(withDuration: duration, delay: 0, options: options, animations: {
                 if let view = self.view {
@@ -68,7 +68,7 @@ class KeyboardManager: NSObject {
             }, completion: nil)
 
 
-        } else if notification.name == NSNotification.Name.UIKeyboardWillHide {
+        } else if notification.name == UIResponder.keyboardWillHideNotification {
             UIView.animate(withDuration: duration, delay: 0, options: options, animations: {
                 if let view = self.view {
                     self.toolbar.frame.origin.y = view.frame.height
