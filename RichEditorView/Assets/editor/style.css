@@ -16,6 +16,10 @@
 
 @charset "UTF-8";
 
+:root {
+    color-scheme: light dark;
+}
+
 html {
     height: 100%;
 }
@@ -60,5 +64,4 @@ div {
     overflow: auto;
     display: block;
     font-family: -apple-system, 'HelveticaNeue';
-	color: black; 
 }
