@@ -16,7 +16,7 @@ class ViewController: UIViewController {
 
     lazy var toolbar: RichEditorToolbar = {
         let toolbar = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44))
-        toolbar.options = RichEditorOptions.all()
+//        toolbar.options = RichEditorOptions
         return toolbar
     }()
 
@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         editorView.delegate = self
-        editorView.inputAccessoryView = toolbar
+//        editorView.inputAccessoryView = toolbar
 
         toolbar.delegate = self
         toolbar.editor = editorView
@@ -59,7 +59,7 @@ extension ViewController: RichEditorDelegate {
     
     func richEditorDidLoad(_ editor: RichEditorView) { }
     
-    func richEditor(_ editor: RichEditorView, shouldInteractWithURL url: URL) -> Bool { return true }
+    func richEditor(_ editor: RichEditorView, shouldInteractWith url: URL) -> Bool { return true }
 
     func richEditor(_ editor: RichEditorView, handleCustomAction content: String) { }
     
@@ -97,8 +97,8 @@ extension ViewController: RichEditorToolbarDelegate {
 
     func richEditorToolbarInsertLink(_ toolbar: RichEditorToolbar) {
         // Can only add links to selected text, so make sure there is a range selection first
-        if let hasSelection = toolbar.editor?.rangeSelectionExists(), hasSelection {
-            toolbar.editor?.insertLink("http://github.com/cjwirth/RichEditorView", title: "Github Link")
-        }
+//        if let hasSelection = toolbar.editor?.rangeSelectionExists(), hasSelection {
+//            toolbar.editor?.insertLink("http://github.com/cjwirth/RichEditorView", title: "Github Link")
+//        }
     }
 }

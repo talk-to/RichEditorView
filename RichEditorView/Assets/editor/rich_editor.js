@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-"use strict";
+ "use strict";
 
 var RE = {};
 
@@ -22,17 +22,6 @@ window.onload = function() {
 };
 
 RE.editor = document.getElementById('editor');
-
-// prevent font inconsistencies from pasted text
-RE.editor.addEventListener('DOMNodeInserted', function(event) {
-    // remove font and span tags after insert/paste
-    switch (event.target.tagName) {
-        case 'FONT':
-        case 'SPAN':
-            event.target.outerHTML = event.target.innerHTML;
-            break;
-    }
-}, false);
 
 // Not universally supported, but seems to work in iOS 7 and 8
 document.addEventListener("selectionchange", function() {
@@ -61,7 +50,6 @@ RE.rangeOrCaretSelectionExists = function() {
 RE.editor.addEventListener("input", function() {
     RE.updatePlaceholder();
     RE.backuprange();
-    RE.wrapTextNodes();
     RE.callback("input");
 });
 
@@ -90,6 +78,7 @@ RE.runCallbackQueue = function() {
 
     setTimeout(function() {
         window.location.href = "re-callback://";
+        //window.webkit.messageHandlers.iOS_Native_FlushMessageQueue.postMessage("re-callback://")
     }, 0);
 };
 
@@ -125,12 +114,16 @@ RE.getText = function() {
     return RE.editor.innerText;
 };
 
+RE.setBaseTextColor = function(color) {
+    RE.editor.style.color  = color;
+};
+
 RE.setPlaceholderText = function(text) {
     RE.editor.setAttribute("placeholder", text);
 };
 
 RE.updatePlaceholder = function() {
-    if (RE.editor.textContent.length > 0) {
+    if (RE.editor.innerHTML.indexOf('img') !== -1 || (RE.editor.textContent.length > 0 && RE.editor.innerHTML.length > 0)) {
         RE.editor.classList.remove("placeholder");
     } else {
         RE.editor.classList.add("placeholder");
@@ -231,6 +224,14 @@ RE.setJustifyRight = function() {
     document.execCommand('justifyRight', false, null);
 };
 
+RE.getLineHeight = function() {
+    return RE.editor.style.lineHeight;
+};
+
+RE.setLineHeight = function(height) {
+    RE.editor.style.lineHeight = height;
+};
+
 RE.insertImage = function(url, alt) {
     var img = document.createElement('img');
     img.setAttribute("src", url);
@@ -297,7 +298,6 @@ RE.addRangeToSelection = function(selection, range) {
 RE.selectElementContents = function(el) {
     var range = document.createRange();
     range.selectNodeContents(el);
-    
     var sel = window.getSelection();
     // this.createSelectionFromRange sel, range
     RE.addRangeToSelection(sel, range);
@@ -306,7 +306,6 @@ RE.selectElementContents = function(el) {
 RE.restorerange = function() {
     var selection = window.getSelection();
     selection.removeAllRanges();
-    
     var range = document.createRange();
     range.setStart(RE.currentSelection.startContainer, RE.currentSelection.startOffset);
     range.setEnd(RE.currentSelection.endContainer, RE.currentSelection.endOffset);
@@ -317,7 +316,14 @@ RE.focus = function() {
     var range = document.createRange();
     range.selectNodeContents(RE.editor);
     range.collapse(false);
-    
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    RE.editor.focus();
+};
+
+RE.focusAtPoint = function(x, y) {
+    var range = document.caretRangeFromPoint(x, y) || document.createRange();
     var selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
@@ -367,8 +373,9 @@ RE.countAnchorTagsInNode = function(node) {
  * @returns {string}
  */
 RE.getSelectedHref = function() {
-    var href = '';
-    var sel = window.getSelection();
+    var href, sel;
+    href = '';
+    sel = window.getSelection();
     if (!RE.rangeOrCaretSelectionExists()) {
         return null;
     }
@@ -387,66 +394,27 @@ RE.getSelectedHref = function() {
     return href ? href : null;
 };
 
-/* Make sure all text nodes are wrapped in divs! */
-
-RE.wrapTextNodes = function() {
-    var contents = RE.editor.childNodes;
-    for (var i = 0; i < contents.length; i++) {
-        if (contents[i].nodeType === Node.TEXT_NODE) {
-            var newNode = document.createElement('div');
-            RE.createWrapper(contents[i], newNode);
-            RE.focus();
-        }
-    }
-};
-
-
-RE.createWrapper = function(elms, node) {
-    var child = node.cloneNode(true);
-    var el = elms;
-    
-    var parent = el.parentNode;
-    var sibling = el.nextSibling;
-
-    child.appendChild(el);
-    
-    if (sibling) {
-        parent.insertBefore(child, sibling);
-    } else {
-        parent.appendChild(child);
-    }
-};
-
-/* retrieve caret vertical position */
-
-RE.getCaretPosition = function() {
-    var x = 0;
+// Returns the cursor position relative to its current position onscreen.
+// Can be negative if it is above what is visible
+RE.getRelativeCaretYPosition = function() {
     var y = 0;
-    var newLine = false;
-    var result = [];
     var sel = window.getSelection();
-    
     if (sel.rangeCount) {
         var range = sel.getRangeAt(0);
         var needsWorkAround = (range.startOffset == 0)
         /* Removing fixes bug when node name other than 'div' */
         // && range.startContainer.nodeName.toLowerCase() == 'div');
         if (needsWorkAround) {
-            x = range.startContainer.offsetLeft;
-            y = range.startContainer.offsetTop; // add range.startContainer.clientHeight if want bottom of caret;
-            newLine = true; // position is on new line with no content
+            y = range.startContainer.offsetTop - window.pageYOffset;
         } else {
             if (range.getClientRects) {
-                var rects = range.getClientRects();
+                var rects=range.getClientRects();
                 if (rects.length > 0) {
-                    x = rects[0].left;
                     y = rects[0].top;
-                    newLine = false;
                 }
             }
         }
     }
-    
-    var json = JSON.stringify({height: y, newLine: newLine});
-    return json;
+
+    return y;
 };

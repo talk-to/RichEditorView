@@ -28,8 +28,14 @@ body {
     min-height: 100%;
     overflow: auto;
     margin: 0;
-    line-height: 25px;
-    font-size: 13pt;
+    font: -apple-system-body;
+    background-color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+    body, #editor {
+        background-color: black;
+    }
 }
 
 h1, p, ul, ol {
@@ -63,5 +69,4 @@ div {
     height: 100%;
     overflow: auto;
     display: block;
-    font-family: -apple-system, 'HelveticaNeue';
 }
