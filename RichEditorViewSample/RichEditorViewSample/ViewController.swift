@@ -16,7 +16,7 @@ class ViewController: UIViewController {
 
     lazy var toolbar: RichEditorToolbar = {
         let toolbar = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44))
-//        toolbar.options = RichEditorOptions
+        toolbar.options = RichEditorDefaultOption.all
         return toolbar
     }()
 
@@ -24,14 +24,15 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         editorView.delegate = self
-//        editorView.inputAccessoryView = toolbar
+        editorView.inputAccessoryView = toolbar
 
         toolbar.delegate = self
         toolbar.editor = editorView
+        editorView.html = "<b>Jesus is God.</b> He saves by grace through faith alone. Soli Deo gloria! <a href='https://perfectGod.com'>perfectGod.com</a>"
 
         // This will create a custom action that clears all the input text when it is pressed
 //        let item = RichEditorOptionItem(image: nil, title: "Clear") { toolbar in
-//            toolbar?.editor?.setHTML("")
+//            toolbar?.editor?.html = ""
 //        }
 //
 //        var options = toolbar.options

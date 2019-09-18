@@ -39,21 +39,18 @@ import WebKit
 
 /// RichEditorView is a UIView that displays richly styled text, and allows it to be edited in a WYSIWYG fashion.
 @objcMembers open class RichEditorView: UIView, UIScrollViewDelegate, WKNavigationDelegate, UIGestureRecognizerDelegate, WKScriptMessageHandler {
-    
-    // MARK: Public Properties
-    
     /// The delegate that will receive callbacks when certain actions are completed.
     open weak var delegate: RichEditorDelegate?
     
     /// Input accessory view to display over they keyboard.
     /// Defaults to nil
-//    open override var inputAccessoryView: UIView? {
-//        get { return webView.getRichEditorInputAccessoryView() }
-//        set { webView.addRichEditorInputAccessoryView(toolbar: newValue) }
-//    }
+    open override var inputAccessoryView: UIView? {
+        get { return webView.accessoryView }
+        set { webView.accessoryView = newValue }
+    }
     
     /// The internal WKWebView that is used to display the text.
-    open private(set) var webView: WKWebView
+    open private(set) var webView: RichEditorWebView
     
     /// Whether or not scroll is enabled on the view.
     open var isScrollEnabled: Bool = true {
@@ -65,9 +62,6 @@ import WebKit
     /// Whether or not to allow user input in the view.
     open var editingEnabled: Bool = false {
         didSet { contentEditable = editingEnabled }
-    }
-    open func isEditingEnabled(handler: @escaping (Bool) -> Void) {
-        isContentEditable(handler: handler)
     }
     
     /// The content HTML of the text being displayed.
@@ -95,21 +89,6 @@ import WebKit
             runJS("RE.setLineHeight('\(innerLineHeight)px');")
         }
     }
-    private func getLineHeight(handler: @escaping (Int) -> Void) {
-        if isEditorLoaded {
-            runJS("RE.getLineHeight();") { r in
-                if let r = Int(r) {
-                    handler(r)
-                } else {
-                    handler(self.innerLineHeight)
-                }
-            }
-        } else {
-            handler(innerLineHeight)
-        }
-    }
-    
-    // MARK: Private Properties
     
     /// Whether or not the editor has finished loading or not yet.
     private var isEditorLoaded = false
@@ -121,28 +100,35 @@ import WebKit
     /// The private internal tap gesture recognizer used to detect taps and focus the editor
     private let tapRecognizer = UITapGestureRecognizer()
     
-    /// The inner height of the editor div.
-    /// Fetches it from JS every time, so might be slow!
-    private func getClientHeight(handler: @escaping (Int) -> Void) {
-        runJS("document.getElementById('editor').clientHeight;") { r in
-            if let r = Int(r) {
-                handler(r)
-            } else {
-                handler(0)
-            }
+    /// The HTML that is currently loaded in the editor view, if it is loaded. If it has not been loaded yet, it is the
+    /// HTML that will be loaded into the editor view once it finishes initializing.
+    public var html: String = "" {
+        didSet {
+            setHTML(self.html)
+        }
+    }
+    
+    /// Private variable that holds the placeholder text, so you can set the placeholder before the editor loads.
+    private var placeholderText: String = ""
+    /// The placeholder text that should be shown when there is no user input.
+    open var placeholder: String {
+        get { return placeholderText }
+        set {
+            placeholderText = newValue
+            runJS("RE.setPlaceholderText('\(newValue.escaped)');")
         }
     }
     
     // MARK: Initialization
     
     public override init(frame: CGRect) {
-        webView = WKWebView()
+        webView = RichEditorWebView()
         super.init(frame: frame)
         setup()
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        webView = WKWebView()
+        webView = RichEditorWebView()
         super.init(coder: aDecoder)
         setup()
     }
@@ -179,19 +165,44 @@ import WebKit
     
     // MARK: - Rich Text Editing
     
-    // MARK: Properties
+    open func isEditingEnabled(handler: @escaping (Bool) -> Void) {
+        isContentEditable(handler: handler)
+    }
     
-    /// The HTML that is currently loaded in the editor view, if it is loaded. If it has not been loaded yet, it is the
-    /// HTML that will be loaded into the editor view once it finishes initializing.
-    public var html: String = "" {
-        didSet {
-            if isEditorLoaded {
-                runJS("RE.setHtml('\(html.escaped)');") { _ in
-                    self.updateHeight()
+    private func getLineHeight(handler: @escaping (Int) -> Void) {
+        if isEditorLoaded {
+            runJS("RE.getLineHeight();") { r in
+                if let r = Int(r) {
+                    handler(r)
+                } else {
+                    handler(self.innerLineHeight)
                 }
+            }
+        } else {
+            handler(innerLineHeight)
+        }
+    }
+    
+    private func setHTML(_ html: String) {
+        if isEditorLoaded {
+            runJS("RE.setHtml('\(html.escaped)')") { _ in
+                self.updateHeight()
             }
         }
     }
+    
+    /// The inner height of the editor div.
+    /// Fetches it from JS every time, so might be slow!
+    private func getClientHeight(handler: @escaping (Int) -> Void) {
+        runJS("document.getElementById('editor').clientHeight;") { r in
+            if let r = Int(r) {
+                handler(r)
+            } else {
+                handler(0)
+            }
+        }
+    }
+    
     public func getHtml(handler: @escaping (String) -> Void) {
         runJS("RE.getHtml();") { r in
             handler(r)
@@ -204,18 +215,6 @@ import WebKit
             handler(r)
         }
     }
-    
-    /// Private variable that holds the placeholder text, so you can set the placeholder before the editor loads.
-    private var placeholderText: String = ""
-    /// The placeholder text that should be shown when there is no user input.
-    open var placeholder: String {
-        get { return placeholderText }
-        set {
-            placeholderText = newValue
-            runJS("RE.setPlaceholderText('\(newValue.escaped)');")
-        }
-    }
-    
     
     /// The href of the current selection, if the current selection's parent is an anchor tag.
     /// Will be nil if there is no href, or it is an empty string.
@@ -384,7 +383,7 @@ import WebKit
                 return
             }
             if let resultBool = result as? Bool {
-                handler?(resultBool ? "true":"false")
+                handler?(resultBool ? "true" : "false")
                 return
             }
             guard let resultStr = result as? String else { return }
@@ -543,10 +542,11 @@ import WebKit
             // If loading for the first time, we have to set the content HTML to be displayed
             if !isEditorLoaded {
                 isEditorLoaded = true
-                html = contentHTML
+                setHTML(html)
                 contentEditable = editingEnabledVar
                 placeholder = placeholderText
                 lineHeight = innerLineHeight
+                
                 delegate?.richEditorDidLoad?(self)
             }
             updateHeight()
@@ -576,6 +576,7 @@ import WebKit
                 let actionPrefix = "action/"
                 let range = method.range(of: actionPrefix)!
                 let action = method.replacingCharacters(in: range, with: "")
+                
                 self.delegate?.richEditor?(self, handle: action)
             }
         }
