@@ -169,8 +169,7 @@ import WebKit
         
         if let filePath = Bundle(for: RichEditorView.self).path(forResource: "rich_editor", ofType: "html") {
             let url = URL(fileURLWithPath: filePath, isDirectory: false)
-            let request = URLRequest(url: url)
-            webView.load(request)
+            webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         }
         
         tapRecognizer.addTarget(self, action: #selector(viewWasTapped))

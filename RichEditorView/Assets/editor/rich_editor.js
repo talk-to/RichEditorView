@@ -15,7 +15,7 @@
  */
  "use strict";
 
-var RE = {};
+const RE = {};
 
 window.onload = function() {
     RE.callback("ready");
@@ -408,7 +408,7 @@ RE.getRelativeCaretYPosition = function() {
             y = range.startContainer.offsetTop - window.pageYOffset;
         } else {
             if (range.getClientRects) {
-                var rects=range.getClientRects();
+                var rects = range.getClientRects();
                 if (rects.length > 0) {
                     y = rects[0].top;
                 }
