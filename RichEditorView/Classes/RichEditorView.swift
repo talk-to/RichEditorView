@@ -98,8 +98,8 @@ import WebKit
     private func getLineHeight(handler: @escaping (Int) -> Void) {
         if isEditorLoaded {
             runJS("RE.getLineHeight();") { r in
-                if let _r = Int(r) {
-                    handler(_r)
+                if let r = Int(r) {
+                    handler(r)
                 } else {
                     handler(self.innerLineHeight)
                 }
@@ -125,8 +125,8 @@ import WebKit
     /// Fetches it from JS every time, so might be slow!
     private func getClientHeight(handler: @escaping (Int) -> Void) {
         runJS("document.getElementById('editor').clientHeight;") { r in
-            if let _r = Int(r) {
-                handler(_r)
+            if let r = Int(r) {
+                handler(r)
             } else {
                 handler(0)
             }
@@ -148,8 +148,6 @@ import WebKit
     }
     
     private func setup() {
-        backgroundColor = .red
-        
         webView.frame = bounds
         webView.navigationDelegate = self
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -514,7 +512,7 @@ import WebKit
             scrollView.contentSize = CGSize(width: scrollView.frame.width, height: contentHeight)
             
             // XXX: Maybe find a better way to get the cursor height
-            self.getLineHeight(handler: {lh in
+            self.getLineHeight(handler: { lh in
                 let lineHeight = CGFloat(lh)
                 let cursorHeight = lineHeight - 4
                 self.relativeCaretYPosition(handler: { r in
@@ -524,13 +522,11 @@ import WebKit
                     if visiblePosition + cursorHeight > scrollView.bounds.size.height {
                         // Visible caret position goes further than our bounds
                         offset = CGPoint(x: 0, y: (visiblePosition + lineHeight) - scrollView.bounds.height + scrollView.contentOffset.y)
-                        
                     } else if visiblePosition < 0 {
                         // Visible caret position is above what is currently visible
                         var amount = scrollView.contentOffset.y + visiblePosition
                         amount = amount < 0 ? 0 : amount
                         offset = CGPoint(x: scrollView.contentOffset.x, y: amount)
-                        
                     }
                     
                     if let offset = offset {
