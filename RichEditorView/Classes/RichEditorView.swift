@@ -7,7 +7,10 @@
 
 import UIKit
 import WebKit
-
+    
+/// The value we hold in order to be able to set the line height before the JS completely loads.
+private let DefaultInnerLineHeight: Int = 18
+    
 /// RichEditorDelegate defines callbacks for the delegate of the RichEditorView
 @objc public protocol RichEditorDelegate: class {
     
@@ -80,13 +83,10 @@ import WebKit
         }
     }
     
-    /// The value we hold in order to be able to set the line height before the JS completely loads.
-    private var innerLineHeight: Int = 18
-    
-    /// The line height of the editor. Defaults to 28.
+    /// The line height of the editor. Defaults to 18.
     open private(set) var lineHeight: Int = 18 {
         didSet {
-            runJS("RE.setLineHeight('\(innerLineHeight)px')")
+            runJS("RE.setLineHeight('\(lineHeight)px')")
         }
     }
     
@@ -115,7 +115,9 @@ import WebKit
         get { return placeholderText }
         set {
             placeholderText = newValue
-            runJS("RE.setPlaceholderText('\(newValue.escaped)')")
+            if isEditorLoaded {
+                runJS("RE.setPlaceholderText('\(newValue.escaped)')")
+            }
         }
     }
     
@@ -175,11 +177,11 @@ import WebKit
                 if let r = Int(r) {
                     handler(r)
                 } else {
-                    handler(self.innerLineHeight)
+                    handler(DefaultInnerLineHeight)
                 }
             }
         } else {
-            handler(innerLineHeight)
+            handler(DefaultInnerLineHeight)
         }
     }
     
@@ -373,7 +375,7 @@ import WebKit
     /// - returns: The result of the JavaScript that was run
     public func runJS(_ js: String, handler: ((String) -> Void)? = nil) {
         webView.evaluateJavaScript(js) { (result, error) in
-            guard error == nil else {
+            if let error = error {
                 print("WKWebViewJavascriptBridge Error: \(String(describing: error)) - JS: \(js)")
                 handler?("")
                 return
@@ -551,7 +553,7 @@ import WebKit
                 contentHTML = html
                 contentEditable = editingEnabledVar
                 placeholder = placeholderText
-                lineHeight = innerLineHeight
+                lineHeight = DefaultInnerLineHeight
                 
                 delegate?.richEditorDidLoad?(self)
             }
