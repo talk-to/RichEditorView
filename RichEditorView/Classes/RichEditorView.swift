@@ -9,11 +9,10 @@ import UIKit
 import WebKit
     
 /// The value we hold in order to be able to set the line height before the JS completely loads.
-private let DefaultInnerLineHeight: Int = 18
+private let DefaultInnerLineHeight: Int = 21
     
 /// RichEditorDelegate defines callbacks for the delegate of the RichEditorView
 @objc public protocol RichEditorDelegate: class {
-    
     /// Called when the inner height of the text being displayed changes
     /// Can be used to update the UI
     @objc optional func richEditor(_ editor: RichEditorView, heightDidChange height: Int)
@@ -83,8 +82,8 @@ private let DefaultInnerLineHeight: Int = 18
         }
     }
     
-    /// The line height of the editor. Defaults to 18.
-    open private(set) var lineHeight: Int = 18 {
+    /// The line height of the editor. Defaults to 21.
+    open private(set) var lineHeight: Int = DefaultInnerLineHeight {
         didSet {
             runJS("RE.setLineHeight('\(lineHeight)px')")
         }
@@ -405,9 +404,7 @@ private let DefaultInnerLineHeight: Int = 18
         }
     }
     
-    
     // MARK: - Delegate Methods
-    
     
     // MARK: UIScrollViewDelegate
     
@@ -428,7 +425,6 @@ private let DefaultInnerLineHeight: Int = 18
         // Handle pre-defined editor actions
         let callbackPrefix = "re-callback://"
         if navigationAction.request.url?.absoluteString.hasPrefix(callbackPrefix) == true {
-            
             // When we get a callback, we need to fetch the command queue to run the commands
             // It comes in as a JSON array of commands that we need to parse
             runJS("RE.getCommandQueue()") { commands in
@@ -467,7 +463,6 @@ private let DefaultInnerLineHeight: Int = 18
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
-    
     
     // MARK: - Private Implementation Details
     
