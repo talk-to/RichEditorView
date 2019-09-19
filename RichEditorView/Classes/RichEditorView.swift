@@ -38,7 +38,7 @@ import WebKit
 }
 
 /// RichEditorView is a UIView that displays richly styled text, and allows it to be edited in a WYSIWYG fashion.
-@objcMembers open class RichEditorView: UIView, UIScrollViewDelegate, WKNavigationDelegate, UIGestureRecognizerDelegate, WKScriptMessageHandler {
+@objcMembers open class RichEditorView: UIView, UIScrollViewDelegate, WKNavigationDelegate, UIGestureRecognizerDelegate {
     /// The delegate that will receive callbacks when certain actions are completed.
     open weak var delegate: RichEditorDelegate?
     
@@ -86,7 +86,7 @@ import WebKit
     /// The line height of the editor. Defaults to 28.
     open private(set) var lineHeight: Int = 18 {
         didSet {
-            runJS("RE.setLineHeight('\(innerLineHeight)px');")
+            runJS("RE.setLineHeight('\(innerLineHeight)px')")
         }
     }
     
@@ -104,7 +104,7 @@ import WebKit
     /// HTML that will be loaded into the editor view once it finishes initializing.
     public var html: String = "" {
         didSet {
-            setHTML(self.html)
+            setHTML(html)
         }
     }
     
@@ -115,7 +115,7 @@ import WebKit
         get { return placeholderText }
         set {
             placeholderText = newValue
-            runJS("RE.setPlaceholderText('\(newValue.escaped)');")
+            runJS("RE.setPlaceholderText('\(newValue.escaped)')")
         }
     }
     
@@ -171,7 +171,7 @@ import WebKit
     
     private func getLineHeight(handler: @escaping (Int) -> Void) {
         if isEditorLoaded {
-            runJS("RE.getLineHeight();") { r in
+            runJS("RE.getLineHeight()") { r in
                 if let r = Int(r) {
                     handler(r)
                 } else {
@@ -183,9 +183,9 @@ import WebKit
         }
     }
     
-    private func setHTML(_ html: String) {
+    private func setHTML(_ value: String) {
         if isEditorLoaded {
-            runJS("RE.setHtml('\(html.escaped)')") { _ in
+            runJS("RE.setHtml('\(value.escaped)')") { _ in
                 self.updateHeight()
             }
         }
@@ -194,7 +194,7 @@ import WebKit
     /// The inner height of the editor div.
     /// Fetches it from JS every time, so might be slow!
     private func getClientHeight(handler: @escaping (Int) -> Void) {
-        runJS("document.getElementById('editor').clientHeight;") { r in
+        runJS("document.getElementById('editor').clientHeight") { r in
             if let r = Int(r) {
                 handler(r)
             } else {
@@ -204,7 +204,7 @@ import WebKit
     }
     
     public func getHtml(handler: @escaping (String) -> Void) {
-        runJS("RE.getHtml();") { r in
+        runJS("RE.getHtml()") { r in
             handler(r)
         }
     }
@@ -224,7 +224,7 @@ import WebKit
                 handler(nil)
                 return
             }
-            self.runJS("RE.getSelectedHref();") { r in
+            self.runJS("RE.getSelectedHref()") { r in
                 if r == "" {
                     handler(nil)
                 } else {
@@ -236,97 +236,97 @@ import WebKit
     
     /// Whether or not the selection has a type specifically of "Range".
     public func hasRangeSelection(handler: @escaping (Bool) -> Void) {
-        runJS("RE.rangeSelectionExists();") { r in
-            handler(r == "true" ? true:false)
+        runJS("RE.rangeSelectionExists()") { r in
+            handler(r == "true" ? true : false)
         }
     }
     
     /// Whether or not the selection has a type specifically of "Range" or "Caret".
     public func hasRangeOrCaretSelection(handler: @escaping (Bool) -> Void) {
-        runJS("RE.rangeOrCaretSelectionExists();") { r in
-            handler(r == "true" ? true:false)
+        runJS("RE.rangeOrCaretSelectionExists()") { r in
+            handler(r == "true" ? true : false)
         }
     }
     
     // MARK: Methods
     
     public func removeFormat() {
-        runJS("RE.removeFormat();")
+        runJS("RE.removeFormat()")
     }
     
     public func setFontSize(_ size: Int) {
-        runJS("RE.setFontSize('\(size)px');")
+        runJS("RE.setFontSize('\(size)px')")
     }
     
     public func setEditorBackgroundColor(_ color: UIColor) {
-        runJS("RE.setBackgroundColor('\(color.hex)');")
+        runJS("RE.setBackgroundColor('\(color.hex)')")
     }
     
     public func undo() {
-        runJS("RE.undo();")
+        runJS("RE.undo()")
     }
     
     public func redo() {
-        runJS("RE.redo();")
+        runJS("RE.redo()")
     }
     
     public func bold() {
-        runJS("RE.setBold();")
+        runJS("RE.setBold()")
     }
     
     public func italic() {
-        runJS("RE.setItalic();")
+        runJS("RE.setItalic()")
     }
     
     // "superscript" is a keyword
     public func subscriptText() {
-        runJS("RE.setSubscript();")
+        runJS("RE.setSubscript()")
     }
     
     public func superscript() {
-        runJS("RE.setSuperscript();")
+        runJS("RE.setSuperscript()")
     }
     
     public func strikethrough() {
-        runJS("RE.setStrikeThrough();")
+        runJS("RE.setStrikeThrough()")
     }
     
     public func underline() {
-        runJS("RE.setUnderline();")
+        runJS("RE.setUnderline()")
     }
     
     public func setTextColor(_ color: UIColor) {
-        runJS("RE.prepareInsert();")
-        runJS("RE.setTextColor('\(color.hex)');")
+        runJS("RE.prepareInsert()")
+        runJS("RE.setTextColor('\(color.hex)')")
     }
     
     public func setEditorFontColor(_ color: UIColor) {
-        runJS("RE.setBaseTextColor('\(color.hex)');")
+        runJS("RE.setBaseTextColor('\(color.hex)')")
     }
     
     public func setTextBackgroundColor(_ color: UIColor) {
-        runJS("RE.prepareInsert();")
-        runJS("RE.setTextBackgroundColor('\(color.hex)');")
+        runJS("RE.prepareInsert()")
+        runJS("RE.setTextBackgroundColor('\(color.hex)')")
     }
     
     public func header(_ h: Int) {
-        runJS("RE.setHeading('\(h)');")
+        runJS("RE.setHeading('\(h)')")
     }
     
     public func indent() {
-        runJS("RE.setIndent();")
+        runJS("RE.setIndent()")
     }
     
     public func outdent() {
-        runJS("RE.setOutdent();")
+        runJS("RE.setOutdent()")
     }
     
     public func orderedList() {
-        runJS("RE.setOrderedList();")
+        runJS("RE.setOrderedList()")
     }
     
     public func unorderedList() {
-        runJS("RE.setUnorderedList();")
+        runJS("RE.setUnorderedList()")
     }
     
     public func blockquote() {
@@ -334,33 +334,33 @@ import WebKit
     }
     
     public func alignLeft() {
-        runJS("RE.setJustifyLeft();")
+        runJS("RE.setJustifyLeft()")
     }
     
     public func alignCenter() {
-        runJS("RE.setJustifyCenter();")
+        runJS("RE.setJustifyCenter()")
     }
     
     public func alignRight() {
-        runJS("RE.setJustifyRight();")
+        runJS("RE.setJustifyRight()")
     }
     
     public func insertImage(_ url: String, alt: String) {
-        runJS("RE.prepareInsert();")
-        runJS("RE.insertImage('\(url.escaped)', '\(alt.escaped)');")
+        runJS("RE.prepareInsert()")
+        runJS("RE.insertImage('\(url.escaped)', '\(alt.escaped)')")
     }
     
     public func insertLink(_ href: String, title: String) {
-        runJS("RE.prepareInsert();")
-        runJS("RE.insertLink('\(href.escaped)', '\(title.escaped)');")
+        runJS("RE.prepareInsert()")
+        runJS("RE.insertLink('\(href.escaped)', '\(title.escaped)')")
     }
     
     public func focus() {
-        runJS("RE.focus();")
+        runJS("RE.focus()")
     }
     
     public func focus(at: CGPoint) {
-        runJS("RE.focusAtPoint(\(at.x), \(at.y));")
+        runJS("RE.focusAtPoint(\(at.x), \(at.y))")
     }
     
     public func blur() {
@@ -374,20 +374,32 @@ import WebKit
     public func runJS(_ js: String, handler: ((String) -> Void)? = nil) {
         webView.evaluateJavaScript(js) { (result, error) in
             guard error == nil else {
-                print("WKWebViewJavascriptBridge: WARNING: Error when trying to fetch data from WKWebView: \(String(describing: error))")
+                print("WKWebViewJavascriptBridge Error: \(String(describing: error)) - JS: \(js)")
                 handler?("")
                 return
             }
+            
+            guard let handler = handler else {
+                return
+            }
+            
             if let resultInt = result as? Int {
-                handler?("\(resultInt)")
+                handler("\(resultInt)")
                 return
             }
+            
             if let resultBool = result as? Bool {
-                handler?(resultBool ? "true" : "false")
+                handler(resultBool ? "true" : "false")
                 return
             }
-            guard let resultStr = result as? String else { return }
-            handler?(resultStr)
+            
+            if let resultStr = result as? String {
+                handler(resultStr)
+                return
+            }
+            
+            // no result
+            handler("")
         }
     }
     
@@ -404,12 +416,6 @@ import WebKit
         }
     }
     
-    // MARK: - WKScriptMessageHandler
-    
-    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        // empty
-    }
-    
     // MARK: WKWebViewDelegate
     
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -423,7 +429,7 @@ import WebKit
             
             // When we get a callback, we need to fetch the command queue to run the commands
             // It comes in as a JSON array of commands that we need to parse
-            runJS("RE.getCommandQueue();") { commands in
+            runJS("RE.getCommandQueue()") { commands in
                 if let data = commands.data(using: .utf8) {
                     
                     let jsonCommands: [String]
@@ -442,11 +448,10 @@ import WebKit
         
         // User is tapping on a link, so we should react accordingly
         if navigationAction.navigationType == .linkActivated {
-            if let
-                url = navigationAction.request.url,
-                let _ = delegate?.richEditor?(self, shouldInteractWith: url)
-            {
-                return decisionHandler(WKNavigationActionPolicy.allow);
+            if let url = navigationAction.request.url {
+                if delegate?.richEditor?(self, shouldInteractWith: url) ?? false {
+                    return decisionHandler(WKNavigationActionPolicy.allow);
+                }
             }
         }
         
@@ -467,8 +472,8 @@ import WebKit
     private var contentEditable: Bool = false {
         didSet {
             if isEditorLoaded {
-                let value = contentEditable ? "true" : "false"
-                runJS("RE.editor.contentEditable = \(value);")
+                let value = (contentEditable ? "true" : "false")
+                runJS("RE.editor.isContentEditable = \(value)")
             }
         }
     }
@@ -485,13 +490,13 @@ import WebKit
     /// This also means that it will be negative if it is above what is currently visible.
     /// Can also return 0 if some sort of error occurs between JS and here.
     private func relativeCaretYPosition(handler: @escaping (Int) -> Void) {
-        runJS("RE.getRelativeCaretYPosition();") { r in
+        runJS("RE.getRelativeCaretYPosition()") { r in
             handler(Int(r) ?? 0)
         }
     }
     
     private func updateHeight() {
-        runJS("document.getElementById('editor').clientHeight;") { heightString in
+        runJS("document.getElementById('editor').clientHeight") { heightString in
             let height = Int(heightString) ?? 0
             if self.editorHeight != height {
                 self.editorHeight = height
@@ -543,6 +548,7 @@ import WebKit
             if !isEditorLoaded {
                 isEditorLoaded = true
                 setHTML(html)
+                contentHTML = html
                 contentEditable = editingEnabledVar
                 placeholder = placeholderText
                 lineHeight = innerLineHeight
