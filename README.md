@@ -4,13 +4,11 @@ RichEditorView
 [![Cocoapods](https://img.shields.io/cocoapods/v/RichEditorView.svg)](http://cocoapods.org/pods/RichEditorView)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg)](https://github.com/Carthage/Carthage)
 
-RichEditorView is a simple, modular, drop-in UIView subclass for Rich Text Editing.
+RichEditorView is a simple, modular, drop-in UIView subclass for Rich Text Editing (`WKWebView` wrapper).
 
-Written in Swift 3.0 (Xcode 8.x)
+Written in Swift 4.0 (Xcode 11.x)
 
-Supports iOS 9 through CocoaPods or Carthage.
-
-- _Looking for Android? Check out_ [wasabeef/richeditor-android](https://github.com/wasabeef/richeditor-android)
+Supports iOS 10 through CocoaPods or Carthage.
 
 Seen in Action
 --------------
@@ -80,7 +78,7 @@ Most basic use:
 
 ```
 editor = RichEditorView(frame: self.view.bounds)
-editor.setHTML("<h1>My Awesome Editor</h1>Now I am editing in <em>style.</em>")
+editor.html = "<h1>My Awesome Editor</h1>Now I am editing in <em>style.</em>"
 self.view.addSubview(editor)
 ```
 
@@ -97,7 +95,7 @@ If you want to show the editing toolbar `RichEditorToolbar`, you will need to ha
 
 ```Swift
 let toolbar = RichEditorToolbar(frame: CGRectMake(0, 0, 320, 44))
-toolbar.options = RichEditorOptions.all()
+toolbar.options = RichEditorDefaultOption.all
 toolbar.editor = editor // Previously instantiated RichEditorView
 ```
 
@@ -130,7 +128,7 @@ If you need even more flexibility with your options, you can add completely cust
 
 ```Swift
 let clearAllItem = RichEditorOptionItem(image: UIImage(named: "clear"), title: "Clear") { toolbar in
-    toolbar?.editor?.setHTML("")
+    toolbar?.editor?.html = ""
     return
 }
 toolbar.options = [clearAllItem]
@@ -140,7 +138,8 @@ toolbar.options = [clearAllItem]
 Acknowledgements
 ----------------
 
-* Caesar Wirth - cjwirth@gmail.com
+* Modernized by: C. Bess
+* Caesar Wirth - cjwirth@gmail.com (original author)
 * [wasabeef/richeditor-android](https://github.com/wasabeef/richeditor-android) - Android version of this library (Apache v2)
 * [nnhubbard/ZSSRichTextEditor](https://github.com/nnhubbard/ZSSRichTextEditor) - Inspiration and Icons (MIT)
 
@@ -148,3 +147,5 @@ License
 -------
 
 RichEditorView is released under the BSD 3-Clause License. See [LICENSE.md](./LICENSE.md) for details.
+
+Soli Deo gloria
