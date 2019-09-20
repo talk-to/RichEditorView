@@ -95,10 +95,7 @@ private let DefaultInnerLineHeight: Int = 21
     /// Value that stores whether or not the content should be editable when the editor is loaded.
     /// Is basically `isEditingEnabled` before the editor is loaded.
     private var editingEnabledVar = true
-    
-    /// The private internal tap gesture recognizer used to detect taps and focus the editor
-    private let tapRecognizer = UITapGestureRecognizer()
-    
+        
     /// The HTML that is currently loaded in the editor view, if it is loaded. If it has not been loaded yet, it is the
     /// HTML that will be loaded into the editor view once it finishes initializing.
     public var html: String = "" {
@@ -135,19 +132,11 @@ private let DefaultInnerLineHeight: Int = 21
     }
     
     private func setup() {
+        // configure webview
         webView.frame = bounds
         webView.navigationDelegate = self
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        if #available(iOS 10.0, *) {
-            webView.configuration.dataDetectorTypes = WKDataDetectorTypes()
-        }
-        
-        if #available(iOS 13.0, *) {
-            webView.backgroundColor = UIColor.systemBackground
-        } else {
-            webView.backgroundColor = UIColor.white
-        }
-        
+        webView.configuration.dataDetectorTypes = WKDataDetectorTypes()
         webView.scrollView.isScrollEnabled = isScrollEnabled
         webView.scrollView.bounces = true
         webView.scrollView.delegate = self
@@ -158,10 +147,6 @@ private let DefaultInnerLineHeight: Int = 21
             let url = URL(fileURLWithPath: filePath, isDirectory: false)
             webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         }
-        
-        tapRecognizer.addTarget(self, action: #selector(viewWasTapped))
-        tapRecognizer.delegate = self
-        addGestureRecognizer(tapRecognizer)
     }
     
     // MARK: - Rich Text Editing
@@ -587,17 +572,8 @@ private let DefaultInnerLineHeight: Int = 21
     
     // MARK: - Responder Handling
     
-    /// Called by the UITapGestureRecognizer when the user taps the view.
-    /// If we are not already the first responder, focus the editor.
-    @objc private func viewWasTapped() {
-        if !webView.containsFirstResponder {
-            let point = tapRecognizer.location(in: webView)
-            focus(at: point)
-        }
-    }
-    
     override open func becomeFirstResponder() -> Bool {
-        if !webView.containsFirstResponder {
+        if !webView.isFirstResponder {
             focus()
             return true
         } else {

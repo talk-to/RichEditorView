@@ -58,7 +58,6 @@
 		B88913C5DC69852D045CF3EE8F082B2B /* rich_editor.html in Resources */ = {isa = PBXBuildFile; fileRef = 5BD5F71B6EB7B220E1E3091C6CF9AFA8 /* rich_editor.html */; };
 		B8E2A31D811C5E258A648D645F64119B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
 		C6803119154B5721FC180F370AEBF8E6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
-		C8E32A826A4DF4A67B1CEBDC03B71468 /* UIView+Responder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90C502E492DBC64736130C3C48F0C0 /* UIView+Responder.swift */; };
 		DFDCC66FFB49038B4917D943688E99AB /* RichEditorToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D6966C9318E4C7C1E71356BDC0B56D /* RichEditorToolbar.swift */; };
 		F6801716E905983548B8BBB30959734B /* assert.js in Resources */ = {isa = PBXBuildFile; fileRef = F3D02F37081A9CE9748C6887B5051585 /* assert.js */; };
 		F82EB72A0BBBE1DB9AC3D63E700F06F4 /* RichEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A962438433603F37F4226134FB32AD85 /* RichEditorView.swift */; };
@@ -120,7 +119,6 @@
 		4C10094719178C91E5D2BD8A5D180278 /* RichEditorView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RichEditorView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E5A788970235FE88C7F22A294C6DE46 /* rich_editor.js */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.javascript; path = rich_editor.js; sourceTree = "<group>"; };
 		503B0ABD7C7194C1ACAD37E972CEBCC7 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5B90C502E492DBC64736130C3C48F0C0 /* UIView+Responder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIView+Responder.swift"; sourceTree = "<group>"; };
 		5BD5F71B6EB7B220E1E3091C6CF9AFA8 /* rich_editor.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; path = rich_editor.html; sourceTree = "<group>"; };
 		66DBAD0EAA771B04B515027F4AF5DE45 /* normalize.css */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.css; path = normalize.css; sourceTree = "<group>"; };
 		685BFF7DBF86353957CA0455A32ED344 /* RichEditorView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = RichEditorView.modulemap; sourceTree = "<group>"; };
@@ -255,7 +253,6 @@
 				A962438433603F37F4226134FB32AD85 /* RichEditorView.swift */,
 				1A33A5AC233198A2001CE62D /* String+Extensions.swift */,
 				1A33A5AD233198A2001CE62D /* UIColor+Extensions.swift */,
-				5B90C502E492DBC64736130C3C48F0C0 /* UIView+Responder.swift */,
 				1AB6F5832332E2AF006B3B5A /* RichEditorWebView.swift */,
 			);
 			path = Classes;
@@ -530,7 +527,6 @@
 				F82EB72A0BBBE1DB9AC3D63E700F06F4 /* RichEditorView.swift in Sources */,
 				1A33A5AF233198A2001CE62D /* UIColor+Extensions.swift in Sources */,
 				1A33A5AE233198A2001CE62D /* String+Extensions.swift in Sources */,
-				C8E32A826A4DF4A67B1CEBDC03B71468 /* UIView+Responder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
