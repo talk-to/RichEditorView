@@ -28,12 +28,10 @@ body {
     overflow: auto;
     margin: 0;
     font: -apple-system-body;
-    background-color: white;
 }
 
 @media (prefers-color-scheme: dark) {
     body, #editor {
-        background-color: black;
     }
 }
 

@@ -453,14 +453,17 @@ private let DefaultInnerLineHeight: Int = 21
     
     private var contentEditable: Bool = false {
         didSet {
+            editingEnabledVar = contentEditable
             if isEditorLoaded {
                 let value = (contentEditable ? "true" : "false")
-                runJS("RE.editor.isContentEditable = \(value)")
+                runJS("RE.editor.contentEditable = \(value)")
             }
         }
     }
     private func isContentEditable(handler: @escaping (Bool) -> Void) {
         if isEditorLoaded {
+            // to get the "editable" value is a different property, than to disable it
+            // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/contentEditable
             runJS("RE.editor.isContentEditable") { value in
                 self.editingEnabledVar = Bool(value) ?? false
             }
