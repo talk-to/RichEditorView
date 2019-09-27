@@ -25,6 +25,7 @@ class ViewController: UIViewController {
         
         editorView.delegate = self
         editorView.inputAccessoryView = toolbar
+        editorView.placeholder = "Edit here"
 
         toolbar.delegate = self
         toolbar.editor = editorView
