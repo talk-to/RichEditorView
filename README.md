@@ -6,7 +6,7 @@ RichEditorView
 
 RichEditorView is a simple, modular, drop-in UIView subclass for Rich Text Editing (`WKWebView` wrapper).
 
-Written in Swift 4.0 (Xcode 11.x)
+Written in Swift 5.0 (Xcode 11.x)
 
 Supports iOS 10 through CocoaPods or Carthage.
 
@@ -52,11 +52,11 @@ Installation
 
 #### Cocoapods
 
-If you have Cocoapods 0.36+ installed, you can use Cocoapods to include `RichEditorView` into your project.
+If you have Cocoapods 1.0+ installed, you can use Cocoapods to include `RichEditorView` into your project.
 Add the following to your `Podfile`:
 
 ```
-pod "RichEditorView"
+pod 'RichEditorView', :git => 'https://github.com/cbess/RichEditorView.git', :tag => '4.0'
 ```
 
 Note: the `use_frameworks!` is required for pods made in Swift.
@@ -66,7 +66,7 @@ Note: the `use_frameworks!` is required for pods made in Swift.
 Add the following to your `Cartfile`:
 
 ```
-github 'cjwirth/RichEditorView'
+github 'cbess/RichEditorView'
 ```
 
 Using RichEditorView
@@ -77,9 +77,9 @@ Using RichEditorView
 Most basic use:
 
 ```
-editor = RichEditorView(frame: self.view.bounds)
-editor.html = "<h1>My Awesome Editor</h1>Now I am editing in <em>style.</em>"
-self.view.addSubview(editor)
+editor = RichEditorView(frame: view.bounds)
+editor.html = "<h1>Jesus is God.</h1> He died for our sins and rose from the dead by His own power. Repent and believe the gospel!"
+view.addSubview(editor)
 ```
 
 ### Editing Text
@@ -88,7 +88,7 @@ To change the styles of the currently selected text, you just call methods direc
 ```Swift
 editor.bold()
 editor.italic()
-editor.setTextColor(UIColor.red)
+editor.setTextColor(.red)
 ```
 
 If you want to show the editing toolbar `RichEditorToolbar`, you will need to handle displaying it (`KeyboardManager.swift` in the sample project is a good start). But configuring it is as easy as telling it which options you want to enable, and telling it which `RichEditorView` to work on.
@@ -97,6 +97,7 @@ If you want to show the editing toolbar `RichEditorToolbar`, you will need to ha
 let toolbar = RichEditorToolbar(frame: CGRectMake(0, 0, 320, 44))
 toolbar.options = RichEditorDefaultOption.all
 toolbar.editor = editor // Previously instantiated RichEditorView
+editor.inputAccessoryView = toolbar
 ```
 
 Some actions require user feedback (such as select an image, choose a color, etc). In this cases you can conform to the `RichEditorToolbarDelegate` and react to these actions, and maybe display some custom UI. For example, from the sample project, we just select a random color:
@@ -148,4 +149,4 @@ License
 
 RichEditorView is released under the BSD 3-Clause License. See [LICENSE.md](./LICENSE.md) for details.
 
-Soli Deo gloria
+[Soli Deo gloria](https://perfectGod.com)
