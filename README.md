@@ -10,6 +10,8 @@ Written in Swift 5.0 (Xcode 11.x)
 
 Supports iOS 10 through CocoaPods or Carthage.
 
+[Soli Deo gloria](https://perfectGod.com)
+
 Seen in Action
 --------------
 ![Demo](./art/Demo.gif)
@@ -148,5 +150,3 @@ License
 -------
 
 RichEditorView is released under the BSD 3-Clause License. See [LICENSE.md](./LICENSE.md) for details.
-
-[Soli Deo gloria](https://perfectGod.com)
