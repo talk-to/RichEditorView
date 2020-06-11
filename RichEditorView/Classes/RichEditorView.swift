@@ -52,8 +52,12 @@ private let DefaultInnerLineHeight: Int = 21
     }
     
     /// The internal WKWebView that is used to display the text.
-    open private(set) var webView: RichEditorWebView
-    
+    open var webView: RichEditorWebView {
+      didSet {
+        setup()
+      }
+    }
+  
     /// Whether or not scroll is enabled on the view.
     open var isScrollEnabled: Bool = true {
         didSet {
@@ -122,13 +126,11 @@ private let DefaultInnerLineHeight: Int = 21
     public override init(frame: CGRect) {
         webView = RichEditorWebView()
         super.init(frame: frame)
-        setup()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         webView = RichEditorWebView()
         super.init(coder: aDecoder)
-        setup()
     }
     
     private func setup() {
