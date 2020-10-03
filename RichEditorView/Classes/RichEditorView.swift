@@ -70,7 +70,9 @@ private let DefaultInnerLineHeight: Int = 21
     /// Is continually updated as the text is being edited.
     open private(set) var contentHTML: String = "" {
         didSet {
-            delegate?.richEditor?(self, contentDidChange: contentHTML)
+            if isReady {
+                delegate?.richEditor?(self, contentDidChange: contentHTML)
+            }
         }
     }
     
@@ -89,8 +91,11 @@ private let DefaultInnerLineHeight: Int = 21
         }
     }
     
-    /// Whether or not the editor has finished loading or not yet.
+    /// Whether or not the editor DOM element has finished loading or not yet.
     private var isEditorLoaded = false
+    
+    /// Indicates if the editor should begin sending events to the delegate
+    private var isReady = false
     
     /// Value that stores whether or not the content should be editable when the editor is loaded.
     /// Is basically `isEditingEnabled` before the editor is loaded.
@@ -539,6 +544,7 @@ private let DefaultInnerLineHeight: Int = 21
                 lineHeight = DefaultInnerLineHeight
                 
                 delegate?.richEditorDidLoad?(self)
+                isReady = true
             }
             updateHeight()
         }
