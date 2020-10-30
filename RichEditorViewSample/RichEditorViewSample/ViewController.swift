@@ -122,19 +122,14 @@ extension ViewController: RichEditorToolbarDelegate, UIColorPickerViewController
         var color: UIColor? = viewController.selectedColor
         
         // don't allow black or white color changes
-        let resetColor = isBlackOrWhite(viewController.selectedColor)
+        if isBlackOrWhite(viewController.selectedColor) {
+            color = nil
+        }
 
         if isTextColor {
-            if resetColor {
-                color = nil
-            }
             
             toolbar.editor?.setTextColor(color)
         } else {
-            if resetColor {
-                color = nil
-            }
-            
             toolbar.editor?.setTextBackgroundColor(color)
         }
     }
