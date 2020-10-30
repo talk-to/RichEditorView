@@ -108,13 +108,13 @@ extension ViewController: RichEditorToolbarDelegate, UIColorPickerViewController
     }
 
     func richEditorToolbarInsertImage(_ toolbar: RichEditorToolbar) {
-        toolbar.editor?.insertImage("https://gravatar.com/avatar/696cf5da599733261059de06c4d1fe22", alt: "Gravatar")
+        toolbar.editor?.insertImage("https://avatars2.githubusercontent.com/u/10981?s=60", alt: "Gravatar")
     }
 
     func richEditorToolbarInsertLink(_ toolbar: RichEditorToolbar) {
         // Can only add links to selected text, so make sure there is a range selection first
 //        if let hasSelection = toolbar.editor?.rangeSelectionExists(), hasSelection {
-//            toolbar.editor?.insertLink("http://github.com/cjwirth/RichEditorView", title: "Github Link")
+//            toolbar.editor?.insertLink("https://github.com/cbess/RichEditorView", title: "GitHub Link")
 //        }
     }
     
@@ -127,7 +127,6 @@ extension ViewController: RichEditorToolbarDelegate, UIColorPickerViewController
         }
 
         if isTextColor {
-            
             toolbar.editor?.setTextColor(color)
         } else {
             toolbar.editor?.setTextBackgroundColor(color)
