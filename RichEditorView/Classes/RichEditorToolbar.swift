@@ -29,20 +29,18 @@ import UIKit
     open var actionHandler: (() -> Void)?
     
     public convenience init(image: UIImage? = nil, handler: (() -> Void)? = nil) {
-        self.init(image: image, style: .plain, target: nil, action: nil)
+        self.init(image: image, style: .plain, target: nil, action: #selector(buttonTapped))
         target = self
-        action = #selector(RichBarButtonItem.buttonWasTapped)
         actionHandler = handler
     }
     
     public convenience init(title: String = "", handler: (() -> Void)? = nil) {
-        self.init(title: title, style: .plain, target: nil, action: nil)
+        self.init(title: title, style: .plain, target: nil, action: #selector(buttonTapped))
         target = self
-        action = #selector(RichBarButtonItem.buttonWasTapped)
         actionHandler = handler
     }
     
-    @objc func buttonWasTapped() {
+    @objc func buttonTapped() {
         actionHandler?()
     }
 }
@@ -65,18 +63,16 @@ import UIKit
 
     /// The tint color to apply to the toolbar background.
     open var barTintColor: UIColor? {
-        get { return backgroundToolbar.barTintColor }
-        set { backgroundToolbar.barTintColor = newValue }
+        get { return toolbar.barTintColor }
+        set { toolbar.barTintColor = newValue }
     }
 
     private var toolbarScroll: UIScrollView
     private var toolbar: UIToolbar
-    private var backgroundToolbar: UIToolbar
     
     public override init(frame: CGRect) {
         toolbarScroll = UIScrollView()
         toolbar = UIToolbar()
-        backgroundToolbar = UIToolbar()
         super.init(frame: frame)
         setup()
     }
@@ -84,38 +80,31 @@ import UIKit
     public required init?(coder aDecoder: NSCoder) {
         toolbarScroll = UIScrollView()
         toolbar = UIToolbar()
-        backgroundToolbar = UIToolbar()
         super.init(coder: aDecoder)
         setup()
     }
     
     private func setup() {
         autoresizingMask = .flexibleWidth
-        backgroundColor = .clear
-
-        backgroundToolbar.frame = bounds
-        backgroundToolbar.autoresizingMask = [.flexibleHeight, .flexibleWidth]
 
         toolbar.autoresizingMask = .flexibleWidth
-        toolbar.backgroundColor = .clear
-        toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
-        toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
 
         toolbarScroll.frame = bounds
+        toolbarScroll.bounces = false
         toolbarScroll.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         toolbarScroll.showsHorizontalScrollIndicator = false
         toolbarScroll.showsVerticalScrollIndicator = false
-        toolbarScroll.backgroundColor = .clear
 
         toolbarScroll.addSubview(toolbar)
 
-        addSubview(backgroundToolbar)
         addSubview(toolbarScroll)
         updateToolbar()
     }
     
     private func updateToolbar() {
         var buttons = [UIBarButtonItem]()
+        
+        // build collection of richbar buttons
         for option in options {
             let handler = { [weak self] in
                 if let strongSelf = self {
@@ -123,34 +112,33 @@ import UIKit
                 }
             }
 
+            var button: RichBarButtonItem!
             if let image = option.image {
-                let button = RichBarButtonItem(image: image, handler: handler)
-                buttons.append(button)
+                button = RichBarButtonItem(image: image, handler: handler)
             } else {
-                let title = option.title
-                let button = RichBarButtonItem(title: title, handler: handler)
-                buttons.append(button)
+                button = RichBarButtonItem(title: option.title, handler: handler)
             }
+            
+            buttons.append(button)
         }
-        toolbar.items = buttons
 
+        // calculate new toolbar width
         let defaultIconWidth: CGFloat = 28
         let barButtonItemMargin: CGFloat = 12
-        let width: CGFloat = buttons.reduce(0) {sofar, new in
-            if let view = new.value(forKey: "view") as? UIView {
-                return sofar + view.frame.size.width + barButtonItemMargin
-            } else {
-                return sofar + (defaultIconWidth + barButtonItemMargin)
+        let width: CGFloat = buttons.reduce(0) { result, button in
+            var width = defaultIconWidth
+            
+            if let view = button.customView {
+                width = view.bounds.width
             }
+            
+            return result + width + barButtonItemMargin
         }
         
-        if width < frame.size.width {
-            toolbar.frame.size.width = frame.size.width + barButtonItemMargin
-        } else {
-            toolbar.frame.size.width = width + barButtonItemMargin
-        }
-        toolbar.frame.size.height = 44
-        toolbarScroll.contentSize.width = width
+        toolbar.items = buttons
+        toolbar.frame.size.width = (width < frame.size.width ? frame.size.width : width + defaultIconWidth)
+        toolbar.frame.size.height = bounds.height
+        toolbarScroll.contentSize.width = width + barButtonItemMargin
     }
     
 }
