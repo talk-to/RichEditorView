@@ -2,6 +2,8 @@
 //  RichEditorToolbar.swift
 //
 //  Created by Caesar Wirth on 4/2/15.
+//  Updated/Modernized by C. Bess on 9/18/19.
+//
 //  Copyright (c) 2015 Caesar Wirth. All rights reserved.
 //
 

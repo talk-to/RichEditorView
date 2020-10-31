@@ -1,7 +1,9 @@
-    //
+//
 //  RichEditor.swift
 //
 //  Created by Caesar Wirth on 4/1/15.
+//  Updated/Modernized by C. Bess on 9/18/19.
+//
 //  Copyright (c) 2015 Caesar Wirth. All rights reserved.
 //
 
@@ -51,7 +53,7 @@ private let DefaultInnerLineHeight: Int = 21
         set { webView.accessoryView = newValue }
     }
     
-    /// The internal WKWebView that is used to display the text.
+    /// The internal WKWebView that is used to display the editor.
     open private(set) var webView: RichEditorWebView
     
     /// Whether or not scroll is enabled on the view.
