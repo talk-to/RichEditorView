@@ -229,15 +229,15 @@ private let DefaultInnerLineHeight: Int = 21
     
     /// Whether or not the selection has a type specifically of "Range".
     public func hasRangeSelection(handler: @escaping (Bool) -> Void) {
-        runJS("RE.rangeSelectionExists()") { r in
-            handler(r == "true" ? true : false)
+        runJS("RE.rangeSelectionExists()") { val in
+            handler((val as NSString).boolValue)
         }
     }
     
     /// Whether or not the selection has a type specifically of "Range" or "Caret".
     public func hasRangeOrCaretSelection(handler: @escaping (Bool) -> Void) {
-        runJS("RE.rangeOrCaretSelectionExists()") { r in
-            handler(r == "true" ? true : false)
+        runJS("RE.rangeOrCaretSelectionExists()") { val in
+            handler((val as NSString).boolValue)
         }
     }
     

@@ -37,10 +37,14 @@ public struct RichEditorOptionItem: RichEditorOption {
     /// The action to be performed when tapped
     public var handler: ((RichEditorToolbar) -> Void)
 
-    public init(image: UIImage?, title: String, action: @escaping ((RichEditorToolbar) -> Void)) {
+    public init(image: UIImage? = nil, title: String, action: @escaping ((RichEditorToolbar) -> Void)) {
         self.image = image
         self.title = title
         self.handler = action
+    }
+    
+    public init(title: String, action: @escaping ((RichEditorToolbar) -> Void)) {
+        self.init(image: nil, title: title, action: action)
     }
     
     // MARK: RichEditorOption
@@ -114,7 +118,7 @@ public enum RichEditorDefaultOption: RichEditorOption {
         }
         
         let bundle = Bundle(for: RichEditorToolbar.self)
-        return UIImage(named: name, in: bundle, compatibleWith: nil)
+        return UIImage(named: name, in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
     }
     
     public var title: String {

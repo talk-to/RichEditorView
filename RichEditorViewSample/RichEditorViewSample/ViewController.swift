@@ -16,6 +16,13 @@ class ViewController: UIViewController {
 
     lazy var toolbar: RichEditorToolbar = {
         let toolbar = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44))
+//        let options: [RichEditorDefaultOption] = [
+//            .bold, .italic, .underline,
+//            .unorderedList, .orderedList,
+//            .indent, .outdent,
+//            .textColor, .textBackgroundColor,
+//            .undo, .redo,
+//        ]
         toolbar.options = RichEditorDefaultOption.all
         return toolbar
     }()
@@ -32,13 +39,13 @@ class ViewController: UIViewController {
         toolbar.editor = editorView
 
         // This will create a custom action that clears all the input text when it is pressed
-//        let item = RichEditorOptionItem(image: nil, title: "Clear") { toolbar in
-//            toolbar?.editor?.html = ""
-//        }
-//
-//        var options = toolbar.options
-//        options.append(item)
-//        toolbar.options = options
+        let item = RichEditorOptionItem(title: "Clear") { toolbar in
+            toolbar.editor?.html = ""
+        }
+
+        var options = toolbar.options
+        options.append(item)
+        toolbar.options = options
     }
 
 }
@@ -113,9 +120,11 @@ extension ViewController: RichEditorToolbarDelegate, UIColorPickerViewController
 
     func richEditorToolbarInsertLink(_ toolbar: RichEditorToolbar) {
         // Can only add links to selected text, so make sure there is a range selection first
-//        if let hasSelection = toolbar.editor?.rangeSelectionExists(), hasSelection {
-//            toolbar.editor?.insertLink("https://github.com/cbess/RichEditorView", title: "GitHub Link")
-//        }
+        toolbar.editor?.hasRangeSelection(handler: { (hasSelection) in
+            if hasSelection {
+                self.toolbar.editor?.insertLink("https://github.com/cbess/RichEditorView", title: "GitHub Link")
+            }
+        })
     }
     
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
