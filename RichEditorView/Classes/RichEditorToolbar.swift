@@ -26,29 +26,20 @@ import UIKit
     @objc optional func richEditorToolbarInsertLink(_ toolbar: RichEditorToolbar)
 }
 
-/// RichBarButtonItem is a subclass of UIBarButtonItem that takes a callback as opposed to the target-action pattern
-@objcMembers open class RichBarButtonItem: UIBarButtonItem {
-    open var actionHandler: (() -> Void)?
-    
-    public convenience init(image: UIImage? = nil, handler: (() -> Void)? = nil) {
-        self.init(image: image, style: .plain, target: nil, action: #selector(buttonTapped))
-        target = self
-        actionHandler = handler
-    }
-    
-    public convenience init(title: String = "", handler: (() -> Void)? = nil) {
-        self.init(title: title, style: .plain, target: nil, action: #selector(buttonTapped))
-        target = self
-        actionHandler = handler
-    }
-    
-    @objc func buttonTapped() {
-        actionHandler?()
-    }
+fileprivate func pinViewEdges(of childView: UIView, to parentView: UIView) {
+    NSLayoutConstraint.activate([
+        childView.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
+        childView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
+        childView.topAnchor.constraint(equalTo: parentView.topAnchor),
+        childView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor)
+    ])
 }
 
+private let ItemMargin: CGFloat = 12
+private let DefaultFont = UIFont.preferredFont(forTextStyle: .body)
+
 /// RichEditorToolbar is UIView that contains the toolbar for actions that can be performed on a RichEditorView
-@objcMembers open class RichEditorToolbar: UIView {
+@objcMembers open class RichEditorToolbar: UIView, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
 
     /// The delegate to receive events that cannot be automatically completed
     open weak var delegate: RichEditorToolbarDelegate?
@@ -65,82 +56,129 @@ import UIKit
 
     /// The tint color to apply to the toolbar background.
     open var barTintColor: UIColor? {
-        get { return toolbar.barTintColor }
-        set { toolbar.barTintColor = newValue }
+        get { return backgroundColor }
+        set { backgroundColor = newValue }
     }
 
-    private var toolbarScroll: UIScrollView
-    private var toolbar: UIToolbar
+    private var collectionView: UICollectionView!
     
     public override init(frame: CGRect) {
-        toolbarScroll = UIScrollView()
-        toolbar = UIToolbar()
         super.init(frame: frame)
-        setup()
+        initViews()
     }
     
     public required init?(coder aDecoder: NSCoder) {
-        toolbarScroll = UIScrollView()
-        toolbar = UIToolbar()
         super.init(coder: aDecoder)
-        setup()
+        initViews()
     }
     
-    private func setup() {
+    private func initViews() {
         autoresizingMask = .flexibleWidth
 
-        toolbar.autoresizingMask = .flexibleWidth
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        
+        collectionView = UICollectionView(frame: bounds, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = backgroundColor
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.register(ToolbarCell.self, forCellWithReuseIdentifier: "cell")
+        
+        let visualView = UIVisualEffectView(frame: bounds)
+        visualView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        visualView.effect = UIBlurEffect(style: .regular)
+        visualView.contentView.addSubview(collectionView)
+        
+        pinViewEdges(of: collectionView, to: visualView)
 
-        toolbarScroll.frame = bounds
-        toolbarScroll.bounces = false
-        toolbarScroll.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        toolbarScroll.showsHorizontalScrollIndicator = false
-        toolbarScroll.showsVerticalScrollIndicator = false
-
-        toolbarScroll.addSubview(toolbar)
-
-        addSubview(toolbarScroll)
-        updateToolbar()
+        addSubview(visualView)
     }
+    
     
     private func updateToolbar() {
-        var buttons = [UIBarButtonItem]()
-        
-        // build collection of richbar buttons
-        for option in options {
-            let handler = { [weak self] in
-                if let strongSelf = self {
-                    option.action(strongSelf)
-                }
-            }
-
-            var button: RichBarButtonItem!
-            if let image = option.image {
-                button = RichBarButtonItem(image: image, handler: handler)
-            } else {
-                button = RichBarButtonItem(title: option.title, handler: handler)
-            }
-            
-            buttons.append(button)
-        }
-
-        // calculate new toolbar width
-        let defaultIconWidth: CGFloat = 28
-        let barButtonItemMargin: CGFloat = 12
-        let width: CGFloat = buttons.reduce(0) { result, button in
-            var width = defaultIconWidth
-            
-            if let view = button.customView {
-                width = view.bounds.width
-            }
-            
-            return result + width + barButtonItemMargin
-        }
-        
-        toolbar.items = buttons
-        toolbar.frame.size.width = (width < frame.size.width ? frame.size.width : width + defaultIconWidth)
-        toolbar.frame.size.height = bounds.height
-        toolbarScroll.contentSize.width = width + barButtonItemMargin
+        collectionView.reloadData()
     }
     
+    func stringWidth(_ text: String, withConstrainedHeight height: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = text.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [.font: font], context: nil)
+
+        return ceil(boundingBox.width)
+    }
+
+    // MARK: - CollectionView
+    
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return options.count
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let option = options[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ToolbarCell
+        cell.option = option
+        
+        return cell
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let option = options[indexPath.item]
+        option.action(self)
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return ItemMargin
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let opt = options[indexPath.item]
+        var width: CGFloat = 0
+        if let image = opt.image {
+            width = image.size.width
+        } else {
+            width = stringWidth(opt.title, withConstrainedHeight: bounds.height, font: DefaultFont)
+        }
+        return CGSize(width: width, height: bounds.height)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: ItemMargin, height: 1)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        return CGSize(width: ItemMargin, height: 1)
+    }
+}
+
+
+private class ToolbarCell: UICollectionViewCell {
+    var option: RichEditorOption! {
+        didSet {
+            // remove the previous subview
+            contentView.subviews.first?.removeFromSuperview()
+            
+            var subview: UIView!
+            
+            // build the subview for the cell
+            if let image = option.image {
+                let imageView = UIImageView(frame: .zero)
+                imageView.image = image
+                imageView.contentMode = .scaleAspectFit
+                subview = imageView
+            } else {
+                let label = UILabel(frame: .zero)
+                label.text = option.title
+                label.font = DefaultFont
+                label.textColor = tintColor
+                subview = label
+            }
+            
+            subview.translatesAutoresizingMaskIntoConstraints = false
+            subview.sizeToFit()
+            contentView.addSubview(subview)
+            pinViewEdges(of: subview, to: contentView)
+        }
+    }
 }
