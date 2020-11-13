@@ -14,10 +14,10 @@ import UIKit
 @objc public protocol RichEditorToolbarDelegate: class {
 
     /// Called when the Text Color toolbar item is pressed.
-    @objc optional func richEditorToolbarChangeTextColor(_ toolbar: RichEditorToolbar)
+    @objc optional func richEditorToolbarChangeTextColor(_ toolbar: RichEditorToolbar, sender: AnyObject)
 
     /// Called when the Background Color toolbar item is pressed.
-    @objc optional func richEditorToolbarChangeBackgroundColor(_ toolbar: RichEditorToolbar)
+    @objc optional func richEditorToolbarChangeBackgroundColor(_ toolbar: RichEditorToolbar, sender: AnyObject)
 
     /// Called when the Insert Image toolbar item is pressed.
     @objc optional func richEditorToolbarInsertImage(_ toolbar: RichEditorToolbar)
@@ -125,7 +125,10 @@ private let DefaultFont = UIFont.preferredFont(forTextStyle: .body)
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let option = options[indexPath.item]
-        option.action(self)
+        
+        if let cell = collectionView.cellForItem(at: indexPath) {
+            option.action(self, sender: cell.contentView)
+        }
     }
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {

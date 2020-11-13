@@ -39,7 +39,7 @@ class ViewController: UIViewController {
         toolbar.editor = editorView
 
         // This will create a custom action that clears all the input text when it is pressed
-        let item = RichEditorOptionItem(title: "Clear") { toolbar in
+        let item = RichEditorOptionItem(title: "Clear") { (toolbar, sender) in
             toolbar.editor?.html = ""
         }
 
@@ -104,12 +104,12 @@ extension ViewController: RichEditorToolbarDelegate, UIColorPickerViewController
         return isBlack || isWhite
     }
     
-    func richEditorToolbarChangeTextColor(_ toolbar: RichEditorToolbar) {
+    func richEditorToolbarChangeTextColor(_ toolbar: RichEditorToolbar, sender: AnyObject) {
         isTextColor = true
         presentColorPicker(title: "Text Color", color: .black)
     }
 
-    func richEditorToolbarChangeBackgroundColor(_ toolbar: RichEditorToolbar) {
+    func richEditorToolbarChangeBackgroundColor(_ toolbar: RichEditorToolbar, sender: AnyObject) {
         isTextColor = false
         presentColorPicker(title: "Background Color", color: .white)
     }
