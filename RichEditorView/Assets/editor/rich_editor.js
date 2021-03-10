@@ -18,6 +18,15 @@
 const RE = {};
 
 RE.editor = document.getElementById('editor');
+RE.container = document.getElementById('container');
+
+RE.setPaddingTop = function(paddingTop) {
+  RE.container.style.paddingTop = paddingTop;
+};
+
+RE.setPaddingBottom = function(paddingBottom) {
+  RE.container.style.paddingBottom = paddingBottom;
+};
 
 // Not universally supported, but seems to work in iOS 7 and 8
 document.addEventListener("selectionchange", function() {
