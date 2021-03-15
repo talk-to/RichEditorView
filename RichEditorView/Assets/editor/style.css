@@ -58,8 +58,6 @@ body {
 
 .placeholder[placeholder]:after {
     content: attr(placeholder);
-    position: absolute;
-    top: 0px;
     color: #ccc;
 }
 
