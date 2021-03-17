@@ -21,11 +21,41 @@ RE.editor = document.getElementById('editor');
 RE.container = document.getElementById('container');
 
 RE.setPaddingTop = function(paddingTop) {
-  RE.container.style.paddingTop = paddingTop;
+    RE.container.style.paddingTop = paddingTop;
 };
 
 RE.setPaddingBottom = function(paddingBottom) {
-  RE.container.style.paddingBottom = paddingBottom;
+    RE.container.style.paddingBottom = paddingBottom;
+};
+
+RE.pasteHtmlAtCaret = function(html) {
+    var sel, range;
+    if (window.getSelection) {
+        sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+            var el = document.createElement("div");
+            el.innerHTML = html;
+            var frag = document.createDocumentFragment(), node, lastNode;
+            while ((node = el.firstChild)) {
+                lastNode = frag.appendChild(node);
+            }
+            range.insertNode(frag);
+
+        // Preserve the selection
+        if (lastNode) {
+            range = range.cloneRange();
+            range.setStartAfter(lastNode);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+      }
+    }
+    RE.updatePlaceholder();
+    RE.backuprange();
+    RE.callback('input')
 };
 
 // Not universally supported, but seems to work in iOS 7 and 8

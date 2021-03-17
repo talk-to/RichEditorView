@@ -181,6 +181,15 @@
         }
       }
 
+      public func pasteHtmlAtCaret(_ value: String, handler: @escaping () -> Void) {
+        if isEditorLoaded {
+          runJS("RE.pasteHtmlAtCaret('\(value.escaped)')") { _ in
+            self.updateHeight()
+            handler()
+          }
+        }
+      }
+
       /// The inner height of the editor div.
       /// Fetches it from JS every time, so might be slow!
       private func getClientHeight(handler: @escaping (Int) -> Void) {
