@@ -24,6 +24,11 @@ html, body {
     height: 100%;
 }
 
+* {
+  max-width: 100%;
+  height: auto !important;
+}
+
 body {
     overflow: auto;
     font: -apple-system-body;
@@ -78,7 +83,7 @@ video {
     height: auto !important;
 }
 
-table {overflow-x: scroll;}
+table { overflow-x: scroll; }
 /*th, td {max-width: 200px; min-width:50px;}*/
 /*table, td, th{border-collapse:collapse; border:1px solid #777;}*/
 /*td{padding:5px 10px; height:35px;}*/
