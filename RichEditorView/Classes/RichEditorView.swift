@@ -556,7 +556,7 @@
           updateHeight()
         }
         else if method.hasPrefix("input") {
-//          scrollCaretToVisible()
+          scrollCaretToVisible()
           runJS("RE.getHtml()") { content in
             self.contentHTML = content
             self.updateHeight()
