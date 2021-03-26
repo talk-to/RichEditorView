@@ -52,7 +52,7 @@
       }
 
       /// The internal WKWebView that is used to display the text.
-      public var webView: RichEditorWebView {
+      public var webView: RichEditorWebView = RichEditorWebView() {
         didSet {
           setup()
         }
@@ -122,18 +122,6 @@
       }
 
       // MARK: Initialization
-
-      public override init(frame: CGRect) {
-        webView = RichEditorWebView()
-        super.init(frame: frame)
-        setup()
-      }
-
-      required public init?(coder aDecoder: NSCoder) {
-        webView = RichEditorWebView()
-        super.init(coder: aDecoder)
-        setup()
-      }
 
       private func setup() {
         // configure webview
