@@ -259,14 +259,6 @@ RE.setJustifyRight = function() {
     document.execCommand('justifyRight', false, null);
 };
 
-RE.getLineHeight = function() {
-    return RE.editor.style.lineHeight;
-};
-
-RE.setLineHeight = function(height) {
-    RE.editor.style.lineHeight = height;
-};
-
 RE.insertImage = function(url, alt) {
     var img = document.createElement('img');
     img.setAttribute("src", url);
