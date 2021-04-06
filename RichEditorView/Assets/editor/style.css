@@ -30,7 +30,6 @@ html, body {
 }
 
 body {
-    overflow: auto;
     font: -apple-system-body;
 }
 
@@ -68,7 +67,6 @@ div {
 }
 
 #editor {
-    overflow: auto;
     display: block;
     font-size: 12pt;
 }
