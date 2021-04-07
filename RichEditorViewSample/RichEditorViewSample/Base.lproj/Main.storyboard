@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="GM1-gj-zqz">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="9Mc-Tw-THQ">
+            <objects>
+                <navigationController id="GM1-gj-zqz" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="btP-qg-psp">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="51V-EJ-E9E"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nnN-bU-tC1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-740" y="433"/>
+        </scene>
+        <!--RichEditorView Swift-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="BYZ-38-t0r" userLabel="RichEditorView Swift" customClass="ViewController" customModule="RichEditorViewSample" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FMR-YK-M0h" customClass="RichEditorView" customModule="RichEditorView">
+                                <rect key="frame" x="8" y="44" width="359" height="259"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="259" id="bsu-3N-XOc"/>
+                                </constraints>
+                            </view>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="HTML Preview" translatesAutoresizingMaskIntoConstraints="NO" id="nPH-ii-3sD">
+                                <rect key="frame" x="0.0" y="305" width="375" height="362"/>
+                                <color key="backgroundColor" systemColor="secondarySystemBackgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <fontDescription key="fontDescription" name="CourierNewPSMT" family="Courier New" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="FMR-YK-M0h" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="8" id="2aU-yH-A9U"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="nPH-ii-3sD" secondAttribute="bottom" id="6AN-Fh-gVd"/>
+                            <constraint firstAttribute="trailing" secondItem="FMR-YK-M0h" secondAttribute="trailing" constant="8" id="FQw-wS-HfB"/>
+                            <constraint firstItem="nPH-ii-3sD" firstAttribute="top" secondItem="FMR-YK-M0h" secondAttribute="bottom" constant="2" id="Lzr-Wp-Dfm"/>
+                            <constraint firstItem="nPH-ii-3sD" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Mu6-aT-245"/>
+                            <constraint firstAttribute="trailing" secondItem="nPH-ii-3sD" secondAttribute="trailing" id="NN3-F1-Dmx"/>
+                            <constraint firstItem="FMR-YK-M0h" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Run-Td-1WG"/>
+                            <constraint firstItem="nPH-ii-3sD" firstAttribute="top" secondItem="FMR-YK-M0h" secondAttribute="bottom" constant="2" id="jUq-Uq-KHX"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="RichEditorView - Swift" id="pyE-1e-UBv"/>
+                    <connections>
+                        <outlet property="editorView" destination="FMR-YK-M0h" id="wch-rq-p16"/>
+                        <outlet property="htmlTextView" destination="nPH-ii-3sD" id="8qp-hR-DGl"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="415" y="432"/>
+        </scene>
+    </scenes>
+</document>
