@@ -27,21 +27,21 @@ import UIKit
 /// RichBarButtonItem is a subclass of UIBarButtonItem that takes a callback as opposed to the target-action pattern
 @objcMembers open class RichBarButtonItem: UIBarButtonItem {
     open var actionHandler: (() -> Void)?
-    
+
     public convenience init(image: UIImage? = nil, handler: (() -> Void)? = nil) {
         self.init(image: image, style: .plain, target: nil, action: nil)
         target = self
         action = #selector(RichBarButtonItem.buttonWasTapped)
         actionHandler = handler
     }
-    
+
     public convenience init(title: String = "", handler: (() -> Void)? = nil) {
         self.init(title: title, style: .plain, target: nil, action: nil)
         target = self
         action = #selector(RichBarButtonItem.buttonWasTapped)
         actionHandler = handler
     }
-    
+
     @objc func buttonWasTapped() {
         actionHandler?()
     }
@@ -72,7 +72,7 @@ import UIKit
     private var toolbarScroll: UIScrollView
     private var toolbar: UIToolbar
     private var backgroundToolbar: UIToolbar
-    
+
     public override init(frame: CGRect) {
         toolbarScroll = UIScrollView()
         toolbar = UIToolbar()
@@ -80,7 +80,7 @@ import UIKit
         super.init(frame: frame)
         setup()
     }
-    
+
     public required init?(coder aDecoder: NSCoder) {
         toolbarScroll = UIScrollView()
         toolbar = UIToolbar()
@@ -88,7 +88,7 @@ import UIKit
         super.init(coder: aDecoder)
         setup()
     }
-    
+
     private func setup() {
         autoresizingMask = .flexibleWidth
         backgroundColor = .clear
@@ -113,7 +113,7 @@ import UIKit
         addSubview(toolbarScroll)
         updateToolbar()
     }
-    
+
     private func updateToolbar() {
         var buttons = [UIBarButtonItem]()
         for option in options {
@@ -143,7 +143,7 @@ import UIKit
                 return sofar + (defaultIconWidth + barButtonItemMargin)
             }
         }
-        
+
         if width < frame.size.width {
             toolbar.frame.size.width = frame.size.width + barButtonItemMargin
         } else {
@@ -152,5 +152,5 @@ import UIKit
         toolbar.frame.size.height = 44
         toolbarScroll.contentSize.width = width
     }
-    
+
 }
