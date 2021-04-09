@@ -506,7 +506,6 @@ private let DefaultInnerLineHeight: CGFloat = 21
                 contentHTML = html
                 contentEditable = editingEnabledVar
                 placeholder = placeholderText
-                runJS("RE.setLineHeight()")
 
                 delegate?.richEditorDidLoad?(self)
             }
