@@ -54,13 +54,24 @@ div {
     font-size: 12pt;
 }
 
+.wrapper {
+  background-color: #fff;
+  color: #000
+}
+
+
 #editor:focus {
     outline: 0px solid transparent;
 }
 
 @media (prefers-color-scheme: dark) {
-    body, #editor {
-    }
+  .wrapper {
+    filter: invert(1)  hue-rotate(.5turn);
+  }
+  img {
+    filter: invert(1)  hue-rotate(.5turn);
+  }
+
 }
 
 .placeholder[placeholder]:after {
