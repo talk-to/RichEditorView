@@ -1,3 +1,4 @@
+Copyright (c) 2019, C. Bess - Soli Deo gloria - perfectGod.com
 Copyright (c) 2015, Caesar Wirth
 All rights reserved.
 

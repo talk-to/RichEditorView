@@ -42,9 +42,9 @@ public struct RichEditorOptionItem: RichEditorOption {
         self.title = title
         self.handler = action
     }
-    
+
     // MARK: RichEditorOption
-    
+
     public func action(_ toolbar: RichEditorToolbar) {
         handler(toolbar)
     }
@@ -74,7 +74,7 @@ public enum RichEditorDefaultOption: RichEditorOption {
     case alignRight
     case image
     case link
-    
+
     public static let all: [RichEditorDefaultOption] = [
         //.clear,
         .undo, .redo, .bold, .italic,
@@ -112,11 +112,11 @@ public enum RichEditorDefaultOption: RichEditorOption {
         case .image: name = "insert_image"
         case .link: name = "insert_link"
         }
-        
+
         let bundle = Bundle(for: RichEditorToolbar.self)
         return UIImage(named: name, in: bundle, compatibleWith: nil)
     }
-    
+
     public var title: String {
         switch self {
         case .clear: return NSLocalizedString("Clear", comment: "")
@@ -142,7 +142,7 @@ public enum RichEditorDefaultOption: RichEditorOption {
         case .link: return NSLocalizedString("Link", comment: "")
         }
     }
-    
+
     public func action(_ toolbar: RichEditorToolbar) {
         switch self {
         case .clear: toolbar.editor?.removeFormat()
