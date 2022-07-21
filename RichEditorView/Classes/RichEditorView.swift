@@ -73,7 +73,7 @@ private let DefaultInnerLineHeight: CGFloat = 21
 
     /// The content HTML of the text being displayed.
     /// Is continually updated as the text is being edited.
-    open public(set) var contentHTML: String = "" {
+    open private(set) var contentHTML: String = "" {
         didSet {
             delegate?.richEditor?(self, contentDidChange: contentHTML)
         }
