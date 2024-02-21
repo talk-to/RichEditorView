@@ -15,13 +15,6 @@
  */
  "use strict";
 
-document.addEventListener('keydown', event => {
-  if (event.key === 'Enter') {
-    document.execCommand('insertLineBreak')
-    event.preventDefault()
-  }
-})
-
 const RE = {};
 
 RE.editor = document.getElementById('editor');
