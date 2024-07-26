@@ -53,7 +53,7 @@ div {
     font-size: 12pt;
 }
 
-.wrapper {
+#titan-message-wrapper {
   color: #000
 }
 
@@ -63,13 +63,9 @@ div {
 }
 
 @media (prefers-color-scheme: dark) {
-  .wrapper {
-    filter: invert(1)  hue-rotate(.5turn);
-  }
-  img {
-    filter: invert(1)  hue-rotate(.5turn);
-  }
-
+  body { background-color: black !important; }
+  #titan-message-wrapper { filter: invert(1)  hue-rotate(.5turn); }
+  img { filter: invert(1)  hue-rotate(.5turn); }
 }
 
 .placeholder[placeholder]:after {
