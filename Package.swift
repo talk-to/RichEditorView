@@ -16,7 +16,7 @@ let package = Package(
       sources: ["Classes"],
       resources: [
         .copy("Assets/editor"),
-        .copy("Assets/icons"),
+        .process("Assets/icons"),
       ]
     ),
   ]
