@@ -130,7 +130,11 @@ private let DefaultInnerLineHeight: CGFloat = 21
         webView.scrollView.clipsToBounds = false
         addSubview(webView)
 
-        if let filePath = Bundle(for: RichEditorView.self).path(forResource: "rich_editor", ofType: "html") {
+        if let filePath = Bundle.module.path(
+            forResource: "rich_editor", 
+            ofType: "html",
+            inDirectory: "editor"
+        ) {
             let url = URL(fileURLWithPath: filePath, isDirectory: false)
             webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         }
