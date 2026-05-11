@@ -18,7 +18,7 @@
 const RE = {};
 
 RE.editor = document.getElementById('editor');
-RE.container = document.getElementById('container');
+RE.container = document.getElementById('ios-flockmail-richeditor-container');
 
 RE.setPaddingTop = function(paddingTop) {
     RE.container.style.paddingTop = paddingTop;
