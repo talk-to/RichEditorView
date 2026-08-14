@@ -10,31 +10,29 @@ import WebKit
 open class RichEditorWebView: WKWebView {
 
     public var accessoryView: UIView?
-    public var linkMenuDelegate: RichEditorLinkMenuDelegate?
+    public weak var linkMenuDelegate: RichEditorLinkMenuDelegate?
 
     public override var inputAccessoryView: UIView? {
         return accessoryView
     }
 
-    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        if action == #selector(openLinkMenu) ||
-           action == #selector(editLinkMenu) ||
-           action == #selector(removeLinkMenu) {
-            return linkMenuDelegate?.isLinkAtCursor() ?? false
+    open override func buildMenu(with builder: any UIMenuBuilder) {
+        super.buildMenu(with: builder)
+        guard builder.system == .context else { return }
+        guard let delegate = linkMenuDelegate, delegate.isLinkAtCursor() else { return }
+
+        let openAction = UIAction(title: NSLocalizedString("Open link", comment: "")) { [weak self] _ in
+            self?.linkMenuDelegate?.openLink()
         }
-        return super.canPerformAction(action, withSender: sender)
-    }
+        let editAction = UIAction(title: NSLocalizedString("Edit link", comment: "")) { [weak self] _ in
+            self?.linkMenuDelegate?.editLink()
+        }
+        let removeAction = UIAction(title: NSLocalizedString("Remove link", comment: "")) { [weak self] _ in
+            self?.linkMenuDelegate?.removeLink()
+        }
 
-    @objc public func openLinkMenu() {
-        linkMenuDelegate?.openLink()
-    }
-
-    @objc public func editLinkMenu() {
-        linkMenuDelegate?.editLink()
-    }
-
-    @objc public func removeLinkMenu() {
-        linkMenuDelegate?.removeLink()
+        let linkMenu = UIMenu(title: "", options: .displayInline, children: [openAction, editAction, removeAction])
+        builder.insertChild(linkMenu, atEndOfMenu: .root)
     }
 }
 
