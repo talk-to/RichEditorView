@@ -25,15 +25,15 @@ open class RichEditorWebView: WKWebView {
         return super.canPerformAction(action, withSender: sender)
     }
 
-    @objc func openLinkMenu() {
+    @objc public func openLinkMenu() {
         linkMenuDelegate?.openLink()
     }
 
-    @objc func editLinkMenu() {
+    @objc public func editLinkMenu() {
         linkMenuDelegate?.editLink()
     }
 
-    @objc func removeLinkMenu() {
+    @objc public func removeLinkMenu() {
         linkMenuDelegate?.removeLink()
     }
 }
