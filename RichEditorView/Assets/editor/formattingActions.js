@@ -30,10 +30,48 @@ RE._formattingSelectedNodes = function() {
   return nodes;
 };
 
+// Ephemeral typing-state tracking.
+// WebKit's queryCommandState on a collapsed cursor reads the DOM ancestor's computed style
+// rather than the ephemeral state set by execCommand. We track the intended state and
+// override the query for collapsed cursors until the cursor moves or the user types.
+RE._ephemeralTypingState = null;
+RE._ephemeralContainer  = null;
+RE._ephemeralOffset     = null;
+
+RE.formattingSetEphemeralState = function(bold, italic, underline, list) {
+  var sel = window.getSelection();
+  if (sel && sel.rangeCount > 0 && sel.getRangeAt(0).collapsed) {
+    var r = sel.getRangeAt(0);
+    RE._ephemeralTypingState = { bold: bold, italic: italic, underline: underline, list: list };
+    RE._ephemeralContainer  = r.startContainer;
+    RE._ephemeralOffset     = r.startOffset;
+  }
+};
+
+RE._formattingCheckEphemeralStale = function() {
+  if (!RE._ephemeralTypingState) { return; }
+  var sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) { RE._ephemeralTypingState = null; return; }
+  var r = sel.getRangeAt(0);
+  if (!r.collapsed
+      || r.startContainer !== RE._ephemeralContainer
+      || r.startOffset    !== RE._ephemeralOffset) {
+    RE._ephemeralTypingState = null;
+    RE._ephemeralContainer  = null;
+    RE._ephemeralOffset     = null;
+  }
+};
+
+RE.editor.addEventListener('input', function() {
+  RE._ephemeralTypingState = null;
+  RE._ephemeralContainer  = null;
+  RE._ephemeralOffset     = null;
+});
+
 // Overrides the original queryCommandState-based implementation so that a format button
 // only shows active when ALL text in the selection has that format, not just part of it.
-// For a collapsed cursor, falls back to queryCommandState so new typed text inherits the
-// cursor's format correctly.
+// For a collapsed cursor, returns the ephemeral override if one is active, then falls back
+// to queryCommandState so new typed text inherits the cursor's format correctly.
 RE.formattingQueryState = function() {
   var sel = window.getSelection();
   var anchor = null;
@@ -42,22 +80,32 @@ RE.formattingQueryState = function() {
     anchor = n ? n.closest('a') : null;
   }
   if (!sel || sel.rangeCount === 0 || sel.getRangeAt(0).collapsed) {
+    RE._formattingCheckEphemeralStale();
+    if (RE._ephemeralTypingState) {
+      return JSON.stringify({
+        bold:      RE._ephemeralTypingState.bold,
+        italic:    RE._ephemeralTypingState.italic,
+        underline: RE._ephemeralTypingState.underline,
+        list:      RE._ephemeralTypingState.list,
+        link:      anchor !== null
+      });
+    }
     return JSON.stringify({
-      bold: document.queryCommandState('bold'),
-      italic: document.queryCommandState('italic'),
+      bold:      document.queryCommandState('bold'),
+      italic:    document.queryCommandState('italic'),
       underline: document.queryCommandState('underline'),
-      list: document.queryCommandState('insertUnorderedList'),
-      link: anchor !== null
+      list:      document.queryCommandState('insertUnorderedList'),
+      link:      anchor !== null
     });
   }
   var nodes = RE._formattingSelectedNodes();
   if (nodes.length === 0) {
     return JSON.stringify({
-      bold: document.queryCommandState('bold'),
-      italic: document.queryCommandState('italic'),
+      bold:      document.queryCommandState('bold'),
+      italic:    document.queryCommandState('italic'),
       underline: document.queryCommandState('underline'),
-      list: document.queryCommandState('insertUnorderedList'),
-      link: anchor !== null
+      list:      document.queryCommandState('insertUnorderedList'),
+      link:      anchor !== null
     });
   }
   function all(test) {
