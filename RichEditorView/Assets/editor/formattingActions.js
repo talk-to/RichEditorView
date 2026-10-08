@@ -141,12 +141,26 @@ RE.formattingGetLinkAtCursor = function() {
 };
 
 RE.formattingInsertLink = function(href, title) {
-  var html = "<a href='" + href + "' style='text-decoration:none; color:rgba(0,122,255,1)'>" + title + "</a>";
   var saved = RE.currentSelection;
   RE.editor.focus();
   RE.currentSelection = saved;
   RE.restorerange();
-  document.execCommand('insertHTML', false, html);
+  // createLink wraps the selection in <a> preserving inner formatting (bold, italic, etc.).
+  // insertHTML would replace the selection with a plain text node, stripping all formatting.
+  document.execCommand('createLink', false, href);
+  var sel = window.getSelection();
+  var node = sel && sel.anchorNode;
+  if (node) {
+    var el = node.nodeType === 3 ? node.parentElement : node;
+    var anchor = el ? el.closest('a') : null;
+    if (anchor) {
+      anchor.style.textDecoration = 'none';
+      anchor.style.color = 'rgba(0,122,255,1)';
+      // Only overwrite text if the user changed it — doing so strips inner formatting,
+      // which is acceptable since the user explicitly chose different link text.
+      if (anchor.textContent !== title) { anchor.textContent = title; }
+    }
+  }
   RE.callback('input');
 };
 
