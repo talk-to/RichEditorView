@@ -156,6 +156,12 @@ RE.formattingInsertLink = function(href, title) {
     anchor.style.textDecoration = 'none';
     anchor.style.color = 'rgba(0,122,255,1)';
     if (anchor.textContent !== title) { anchor.textContent = title; }
+    var range = document.createRange();
+    range.setStart(anchor, anchor.childNodes.length);
+    range.collapse(true);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
   RE.callback('input');
 };
