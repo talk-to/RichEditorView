@@ -119,7 +119,12 @@ RE.formattingQueryState = function() {
     while (el && el !== document.body) { if (el.tagName === 'LI') return true; el = el.parentElement; }
     return false;
   });
-  return JSON.stringify({ bold: bold, italic: italic, underline: underline, list: list, link: anchor !== null });
+  var link = nodes.some(function(n) {
+    var el = n.parentElement;
+    while (el && el !== document.body) { if (el.tagName === 'A') return true; el = el.parentElement; }
+    return false;
+  });
+  return JSON.stringify({ bold: bold, italic: italic, underline: underline, list: list, link: link });
 };
 
 RE.formattingGetLinkAtCursor = function() {
@@ -159,7 +164,7 @@ RE.formattingUpdateLink = function(href, title) {
       anchor.href = href;
       anchor.textContent = title;
       var range = document.createRange();
-      range.setStartAfter(anchor);
+      range.setStart(anchor, anchor.childNodes.length);
       range.collapse(true);
       sel.removeAllRanges();
       sel.addRange(range);
