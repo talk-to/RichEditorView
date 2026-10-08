@@ -158,6 +158,11 @@ RE.formattingUpdateLink = function(href, title) {
     if (anchor) {
       anchor.href = href;
       anchor.textContent = title;
+      var range = document.createRange();
+      range.setStartAfter(anchor);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
     }
   }
   RE.callback('input');
