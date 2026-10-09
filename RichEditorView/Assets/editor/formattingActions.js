@@ -229,6 +229,17 @@ RE.formattingForceApply = function(command) {
   document.execCommand(command);
 };
 
+RE.formattingRestoreFocus = function(bold, italic, underline, list) {
+  if (RE.currentSelection) { RE.restorerange(); }
+  RE.editor.focus();
+  setTimeout(function() {
+    if (document.queryCommandState('bold') !== bold) { document.execCommand('bold'); }
+    if (document.queryCommandState('italic') !== italic) { document.execCommand('italic'); }
+    if (document.queryCommandState('underline') !== underline) { document.execCommand('underline'); }
+    RE.formattingSetEphemeralState(bold, italic, underline, list);
+  }, 0);
+};
+
 RE.formattingInstallSelectionListener = function() {
   var timer = null;
   document.addEventListener('selectionchange', function() {
