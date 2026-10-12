@@ -231,7 +231,7 @@ RE.formattingForceApply = function(command) {
 
 RE.formattingRestoreFocus = function(bold, italic, underline, list) {
   if (RE.currentSelection) { RE.restorerange(); }
-  RE.editor.focus();
+  RE.editor.focus({ preventScroll: true });
   setTimeout(function() {
     if (document.queryCommandState('bold') !== bold) { document.execCommand('bold'); }
     if (document.queryCommandState('italic') !== italic) { document.execCommand('italic'); }
