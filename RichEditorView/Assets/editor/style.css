@@ -72,6 +72,10 @@ div {
     color: #cccccc;
 }
 
+@media (prefers-color-scheme: dark) {
+  .placeholder[placeholder]:after { color: #333333; }
+}
+
 input[type=checkbox] {
     transform: scale(1.4);
     margin-right: 9px;
