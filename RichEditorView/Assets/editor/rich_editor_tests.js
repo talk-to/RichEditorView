@@ -143,10 +143,10 @@ var RichEditorTests = function() {
         Assert.equals(false, anchor.hasAttribute('data-fm-link-tk'), 'no injected marker');
     };
 
-    tests['testUpdateUntrackRemovesMarkerAndKeepsMid'] = function() {
+    tests['testUpdateUntrackRemovesMarkerAndMid'] = function() {
         let anchor = updateLink("<a id='target' href='" + link + "' data-fm-link-tk='true' data-fm-tk-mid='m1'>Foo</a>", false);
         Assert.equals(false, anchor.hasAttribute('data-fm-link-tk'), 'marker removed');
-        Assert.equals('m1', anchor.getAttribute('data-fm-tk-mid'), 'mid kept');
+        Assert.equals(false, anchor.hasAttribute('data-fm-tk-mid'), 'mid removed');
     };
 
     tests['testUpdateTrackAddsMarker'] = function() {
@@ -160,10 +160,15 @@ var RichEditorTests = function() {
         Assert.equals('true', anchor.getAttribute('data-fm-link-tk'), 'marker kept');
     };
 
-    tests['testUpdateTrackKeepsExistingMid'] = function() {
+    tests['testUpdateTrackDropsForeignMid'] = function() {
         let anchor = updateLink("<a id='target' href='" + link + "' data-fm-link-tk='true' data-fm-tk-mid='m1'>Foo</a>", true);
         Assert.equals('true', anchor.getAttribute('data-fm-link-tk'), 'marker kept');
-        Assert.equals('m1', anchor.getAttribute('data-fm-tk-mid'), 'mid unchanged');
+        Assert.equals(false, anchor.hasAttribute('data-fm-tk-mid'), 'mid removed');
+    };
+
+    tests['testUpdateWithoutTrackedArgumentKeepsMid'] = function() {
+        let anchor = updateLink("<a id='target' href='" + link + "' data-fm-link-tk='true' data-fm-tk-mid='m1'>Foo</a>");
+        Assert.equals('m1', anchor.getAttribute('data-fm-tk-mid'), 'mid kept');
     };
 
     return self;

@@ -144,13 +144,15 @@ RE.formattingGetLinkAtCursor = function() {
   return JSON.stringify({ "href": "", "text": sel.toString(), "tracked": false });
 };
 
-// Sets or removes only the tracked-link marker. Any data-fm-tk-mid web wrote stays as is.
+// Sets or removes the tracked-link marker and drops any data-fm-tk-mid, so web treats the link as this draft's.
 // A non-boolean (callers that predate tracking) leaves the anchor unchanged.
 RE._formattingSetLinkTracked = function(anchor, tracked) {
   if (tracked === true) {
     anchor.setAttribute('data-fm-link-tk', 'true');
+    anchor.removeAttribute('data-fm-tk-mid');
   } else if (tracked === false) {
     anchor.removeAttribute('data-fm-link-tk');
+    anchor.removeAttribute('data-fm-tk-mid');
   }
 };
 
