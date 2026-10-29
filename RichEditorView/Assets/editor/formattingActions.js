@@ -134,13 +134,29 @@ RE.formattingGetLinkAtCursor = function() {
     var el = node.nodeType === 3 ? node.parentElement : node;
     var anchor = el ? el.closest('a') : null;
     if (anchor) {
-      return JSON.stringify({ "href": anchor.href, "text": anchor.textContent });
+      return JSON.stringify({
+        "href": anchor.href,
+        "text": anchor.textContent,
+        "tracked": anchor.getAttribute('data-fm-link-tk') === 'true'
+      });
     }
   }
-  return JSON.stringify({ "href": "", "text": sel.toString() });
+  return JSON.stringify({ "href": "", "text": sel.toString(), "tracked": false });
 };
 
-RE.formattingInsertLink = function(href, title) {
+// Sets or removes the tracked-link marker and drops any data-fm-tk-mid, so web treats the link as this draft's.
+// A non-boolean (callers that predate tracking) leaves the anchor unchanged.
+RE._formattingSetLinkTracked = function(anchor, tracked) {
+  if (tracked === true) {
+    anchor.setAttribute('data-fm-link-tk', 'true');
+    anchor.removeAttribute('data-fm-tk-mid');
+  } else if (tracked === false) {
+    anchor.removeAttribute('data-fm-link-tk');
+    anchor.removeAttribute('data-fm-tk-mid');
+  }
+};
+
+RE.formattingInsertLink = function(href, title, tracked) {
   var saved = RE.currentSelection;
   RE.editor.focus();
   RE.currentSelection = saved;
@@ -156,6 +172,7 @@ RE.formattingInsertLink = function(href, title) {
     anchor.style.textDecoration = 'none';
     anchor.style.color = 'rgba(0,122,255,1)';
     if (anchor.textContent !== title) { anchor.textContent = title; }
+    RE._formattingSetLinkTracked(anchor, tracked);
     var range = document.createRange();
     range.setStart(anchor, anchor.childNodes.length);
     range.collapse(true);
@@ -166,7 +183,7 @@ RE.formattingInsertLink = function(href, title) {
   RE.callback('input');
 };
 
-RE.formattingUpdateLink = function(href, title) {
+RE.formattingUpdateLink = function(href, title, tracked) {
   var saved = RE.currentSelection;
   RE.editor.focus();
   RE.currentSelection = saved;
@@ -179,6 +196,7 @@ RE.formattingUpdateLink = function(href, title) {
     if (anchor) {
       anchor.href = href;
       anchor.textContent = title;
+      RE._formattingSetLinkTracked(anchor, tracked);
       var range = document.createRange();
       range.setStart(anchor, anchor.childNodes.length);
       range.collapse(true);
